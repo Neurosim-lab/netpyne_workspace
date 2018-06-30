@@ -20,7 +20,7 @@ netParams.cellParams['pyr_rule'] = cellRule  												# add dict to list of c
 
  # Stimulation parameters
 netParams.stimSourceParams['IClamp1'] = {'type': 'IClamp', 'dur': 10, 'del': 20, 'amp':0.6}
-netParams.stimTargetParams['IClamp1->cell0'] = {'source': 'IClamp1', 'conds': {'pop': 'E', 'cellList':[0]}, 'sec':'dend', 'loc':1.0}
+netParams.stimTargetParams['IClamp1->cell0'] = {'source': 'IClamp1', 'conds': {'cellList':[0]}, 'sec':'dend', 'loc':1.0}
 
 
 # Synaptic mechanism parameters
@@ -31,6 +31,7 @@ netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 1.0, 'e
 netParams.connParams['E->E'] = {
     'preConds': {'pop': 'E'}, 'postConds': {'pop': 'E'},
     'weight': 0.03,                    # weight of each connection
+    'probability': 0.3,
     'delay': 5,     # delay min=0.2, mean=13.0, var = 1.4
     'synMech': 'exc',
     'sec': 'soma'}
