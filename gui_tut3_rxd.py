@@ -1,14 +1,14 @@
 from netpyne import specs, sim
 from neuron import rxd, h, gui
 
-def addRxd():
-    caDiff = 0.08
-    ip3Diff = 1.41
-    cac_init = 1.e-4
-    ip3_init = 0.1
+def addRxD():
+    caDiff = 0 #0.08
+    ip3Diff = 0 #1.41
+    cac_init = 0 #1.e-4
+    ip3_init = 0 #0.1
     gip3r = 12040
-    gserca = 0.3913
-    gleak = 6.020
+    gserca = 0 #0.3913
+    gleak = 0 #6.020
     kserca = 0.1
     kip3 = 0.15
     kact = 0.4
@@ -38,13 +38,32 @@ def addRxd():
 
     h.dt *= 10
 
-    cae_init = (0.0017 - cac_init * fc) / fe
+    cae_init = 0 #(0.0017 - cac_init * fc) / fe
     ca[er].concentration = cae_init
+
+    ca[cyt].concentration = cae_init
 
     for node in ip3.nodes:
       if node.x < 0.2:
           node.concentration = 2
 
+
+def addExtra():
+    cyt = rxd.Region(h.allsec(), nrn_region='i')
+    rxd.options.enable.extracellular = True
+    extracellular = rxd.Extracellular(xlo=-2, ylo=-300, zlo=-2, xhi = 300, yhi =0, zhi =100, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
+    rxd_na = rxd.Species([extracellular,cyt], name= 'na', charge= 1, d=1.78)
+    rxd_k = rxd.Species([extracellular, cyt], name = 'k', charge = 1, d =1.78)
+    h.finitialize()
+    print 'initial state %g' % rxd_na[extracellular].states3d.mean()
+    na = rxd_na[cyt]
+    k = rxd_k[cyt]
+    na_ecs = rxd_na[extracellular]
+    k_ecs = rxd_k[extracellular]
+    na_ecs.states3d[:] = 140
+    k_ecs.states3d[:] = 4
+    rxd_na[extracellular].states3d[:] = h.nao0_na_ion
+    rxd_k[extracellular].states3d[:] = h.ko0_k_ion
 
 
 # Network parameters
@@ -57,12 +76,12 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 1, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 1, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 1, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 1, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_cellParams.json')
@@ -109,7 +128,9 @@ simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT'
 
 sim.create()
 
-sim.addRxd()
+#addRxD()
+
+addExtra()
 
 sim.simulate()
 sim.analyze()
