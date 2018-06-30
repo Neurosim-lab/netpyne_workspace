@@ -109,7 +109,7 @@ simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT'
 
 sim.create()
 
-#sim.addRxd()
+sim.addRxd()
 
 sim.simulate()
 sim.analyze()
