@@ -66,11 +66,13 @@ INITIAL {
 BREAKPOINT {
 	SOLVE states METHOD cnexp
 	gcat = gcatbar*m*m*h
-        if (USEGHK == 1) {
+      :  if (USEGHK == 1) {
+
   	  ica = gcat*ghk(v,cai,cao)
-        } else {
-          ica = gcat*(v-erev)
-        }
+      
+      :  } else {
+      :   ica = gcat*(v-erev)
+      : }
 }
 
 DERIVATIVE states {	: exact when v held constant
@@ -86,6 +88,7 @@ FUNCTION ghk(v(mV), ci(mM), co(mM)) (mV) {
         f = KTF(celsius)/2
         nu = v/f
         ghk=-f*(1. - (ci/co)*exp(nu))*efun(nu)
+        : ghk=-f*(1. - (ci/co)*exp(nu))
 }
 
 FUNCTION KTF(celsius (DegC)) (mV) {
