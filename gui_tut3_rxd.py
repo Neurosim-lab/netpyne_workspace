@@ -14,12 +14,12 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
+# netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+# netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+# netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+# netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+# netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_cellParams.json')
@@ -52,7 +52,7 @@ for mech in removeMechs:
         del netParams.cellParams['CellRule']['secs'][sec]['mechs'][mech]
  
 
-
+netParams.saveCellParamsRule('CellRule', 'cells/IT2_reduced_rxd_cellParams.json')
 
 
 ## Synaptic mechanism parameters
@@ -128,7 +128,7 @@ if createSimulate:
         caDiff = 0.08
         ip3Diff = 1.41
         cac_init = 1e-4 #1e-2# 1e-5 # 1.e-4  # ~100 nM (100k less than extracellular); 1000 nM when increased
-        ip3_init = 0 #1e-6
+        ip3_init = 1 #1e-6
         gip3r = 12040 * 100
         gserca = 0.3913
         gleak = 6.020 #* 0.01 #1e6 #100
@@ -149,8 +149,8 @@ if createSimulate:
 
         h_gate = ip3r_gate_state[cyt_er_membrane]
 
-        # serca = rxd.MultiCompartmentReaction(ca[cyt], ca[er], gserca / ((kserca / (1000. * ca[cyt])) ** 2 + 1), membrane=cyt_er_membrane, custom_dynamics=True)
-        # leak = rxd.MultiCompartmentReaction(ca[er], ca[cyt], gleak, gleak, membrane=cyt_er_membrane)
+        serca = rxd.MultiCompartmentReaction(ca[cyt], ca[er], gserca / ((kserca / (1000. * ca[cyt])) ** 2 + 1), membrane=cyt_er_membrane, custom_dynamics=True)
+        leak = rxd.MultiCompartmentReaction(ca[er], ca[cyt], gleak, gleak, membrane=cyt_er_membrane)
 
         minf = ip3[cyt] * 1000. * ca[cyt] / (ip3[cyt] + kip3) / (1000. * ca[cyt] + kact)
         k = gip3r * (minf * h_gate) ** 3

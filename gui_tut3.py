@@ -10,15 +10,15 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 20, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 20, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 20, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
-netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_cellParams.json')
+netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
 netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
 
 ## Synaptic mechanism parameters
@@ -27,7 +27,7 @@ netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 10.0, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 8.0, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 ## Cell connectivity rules
 netParams.connParams['E->all'] = {
@@ -46,17 +46,66 @@ netParams.connParams['I->E'] = {
 
 
 # Simulation configuration
-simConfig = specs.SimConfig()        # object of class SimConfig to store simulation configuration
-simConfig.duration = 1.0*1e3           # Duration of the simulation, in ms
-simConfig.dt = 0.1                # Internal integration timestep to use
+simConfig = specs.SimConfig()       # object of class SimConfig to store simulation configuration
+simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
+simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
+simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
 simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'net_lfp'   # Set file output name
+simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
+                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
+                          'ip3_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ip3i'},
+                          'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}} 
+
 
 simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/5, netParams.sizeY, netParams.sizeY/5)]
 
+simConfig.analysis['plotTraces']={'include': [0]}
 simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig':True, 'figSize': (9,3)}      # Plot a raster
 simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
+
+
+'''RxD code
+from neuron import h,rxd
+
+caDiff = 0.08
+ip3Diff = 1.41
+cac_init = 1e-4
+ip3_init = 0 # 1
+gip3r = 12040 * 100
+gserca = 0.3913
+gleak = 6.020 
+kserca = 0.1
+kip3 = 0.15
+kact = 0.4
+ip3rtau = 2000 
+fc = 0.8
+fe = 0.2
+
+sim.cyt = rxd.Region(h.allsec(), nrn_region='i', geometry=rxd.FractionalVolume(fc, surface_fraction=1))
+sim.er = rxd.Region(h.allsec(), geometry=rxd.FractionalVolume(fe))
+sim.cyt_er_membrane = rxd.Region(h.allsec(), geometry=rxd.ScalableBorder(1, on_cell_surface=False))
+
+sim.ca = rxd.Species([sim.cyt, sim.er], d=caDiff, name='ca', charge=2, initial=cac_init)
+sim.ip3 = rxd.Species(sim.cyt, d=ip3Diff, name='ip3', initial=ip3_init)
+sim.ip3r_gate_state = rxd.State(sim.cyt_er_membrane, initial=0.8)
+
+h_gate = sim.ip3r_gate_state[sim.cyt_er_membrane]
+
+serca = rxd.MultiCompartmentReaction(sim.ca[sim.cyt], sim.ca[sim.er], gserca / ((kserca / (1000. * sim.ca[sim.cyt])) ** 2 + 1), membrane=sim.cyt_er_membrane, custom_dynamics=True)
+leak = rxd.MultiCompartmentReaction(sim.ca[sim.er], sim.ca[sim.cyt], gleak, gleak, membrane=sim.cyt_er_membrane)
+
+minf = sim.ip3[sim.cyt] * 1000. * sim.ca[sim.cyt] / (sim.ip3[sim.cyt] + kip3) / (1000. * sim.ca[sim.cyt] + kact)
+k = gip3r * (minf * h_gate) ** 3
+sim.ip3r = rxd.MultiCompartmentReaction(sim.ca[sim.er], sim.ca[sim.cyt], k, k, membrane=sim.cyt_er_membrane)
+sim.ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * sim.ca[sim.cyt] / (0.3)) - h_gate) / ip3rtau)
+'''
+
+
+
+
 
 
 # Create network and run simulation
