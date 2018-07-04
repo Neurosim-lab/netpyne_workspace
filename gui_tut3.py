@@ -10,12 +10,12 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
+# netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+# netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+# netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+# netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+# netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
@@ -47,7 +47,7 @@ netParams.connParams['I->E'] = {
 
 # Simulation configuration
 simConfig = specs.SimConfig()       # object of class SimConfig to store simulation configuration
-simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
+simConfig.duration = 0.5*1e3        # Duration of the simulation, in ms
 simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
 simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
@@ -67,49 +67,25 @@ simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveF
 simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
 
 
-''' RxD code
-from neuron import h,rxd
+#### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
+testing = 0
+if testing:
+    # --------------------------------
+    # Instantiate network
+    # --------------------------------
+    sim.initialize(netParams, simConfig)  # create network object and set cfg and net params
+    sim.net.createPops()                  # instantiate network populations
+    sim.net.createCells()                 # instantiate network cells based on defined populations
+    sim.net.connectCells()                # create connections between cells based on params
+    sim.net.addStims()                    # add external stimulation to cells (IClamps etc)
 
-caDiff = 0.08
-ip3Diff = 1.41
-cac_init = 1e-4
-ip3_init = 0 # 1
-gip3r = 12040 * 100
-gserca = 0.3913
-gleak = 6.020 
-kserca = 0.1
-kip3 = 0.15
-kact = 0.4
-ip3rtau = 2000 
-fc = 0.8
-fe = 0.2
+    import gui_rxd
 
-cyt = rxd.Region(h.allsec(), nrn_region='i', geometry=rxd.FractionalVolume(fc, surface_fraction=1))
-er = rxd.Region(h.allsec(), geometry=rxd.FractionalVolume(fe))
-cyt_er_membrane = rxd.Region(h.allsec(), geometry=rxd.ScalableBorder(1, on_cell_surface=False))
+    # --------------------------------
+    # Simulate and analyze network
+    # --------------------------------
+    sim.setupRecording()             # setup variables to record for each cell (spikes, V traces, etc)
+    sim.simulate()
+    sim.analyze()
 
-ca = rxd.Species([cyt, er], d=caDiff, name='ca', charge=2, initial=cac_init)
-ip3 = rxd.Species(cyt, d=ip3Diff, name='ip3', initial=ip3_init)
-ip3r_gate_state = rxd.State(cyt_er_membrane, initial=0.8)
-
-h_gate = ip3r_gate_state[cyt_er_membrane]
-
-serca = rxd.MultiCompartmentReaction(ca[cyt], ca[er], gserca / ((kserca / (1000. * ca[cyt])) ** 2 + 1), membrane=cyt_er_membrane, custom_dynamics=True)
-leak = rxd.MultiCompartmentReaction(ca[er], ca[cyt], gleak, gleak, membrane=cyt_er_membrane)
-
-minf = ip3[cyt] * 1000. * ca[cyt] / (ip3[cyt] + kip3) / (1000. * ca[cyt] + kact)
-kip3 = gip3r * (minf * h_gate) ** 3
-ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er_membrane)
-ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
-
-cyt_extra = rxd.Region(h.allsec(), nrn_region='i')
-rxd.options.enable.extracellular = True
-extracellular = rxd.Extracellular(xlo=-10, ylo=-10, zlo=-10, xhi = 200, yhi = 200, zhi = 1000, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
-na = rxd.Species([extracellular,cyt_extra], name= 'na', charge= 1, d=1.78)
-k = rxd.Species([extracellular, cyt_extra], name = 'k', charge = 1, d =1.78)
-
-
-'''
-
-# Create network and run simulation
-#sim.createSimulateAnalyze(netParams = netParams, simConfig = simConfig)    
+    gui_rxd.plotExtracellularConcentration()
