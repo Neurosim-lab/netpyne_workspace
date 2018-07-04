@@ -1,4 +1,5 @@
 from netpyne import specs, sim
+import sys; reload(sys)
 
 # Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
@@ -60,15 +61,16 @@ simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
                           'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}} 
 
 
-simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/5, netParams.sizeY, netParams.sizeY/5)]
+# simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/5, netParams.sizeY, netParams.sizeY/5)]
 
 simConfig.analysis['plotTraces']={'include': [0]}
 simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig':True, 'figSize': (9,3)}      # Plot a raster
-simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
+# simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
 
+# sim.createSimulateAnalyze()
 
 #### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
-testing = 0
+testing = 1
 if testing:
     # --------------------------------
     # Instantiate network

@@ -46,7 +46,7 @@ nax_gbar_somam = 1
 nax_gbar_dendm = 1
 mnax = 0.0 // slope of linear decrease of nax in dends (with distance from soma)
 
-kdr_gbar    = 0.0084715576279
+kdr_gbar    = 0.0084715576279*2
 kdr_gbar_axonm = 5
 // A few kinetic params changed vis-a-vis kdr.mod defaults:
 // These param values match the default values in kdr.mod (except where indicated).
@@ -54,7 +54,7 @@ kdr_vhalfn  = 13
 kdr_a0n     = 0.0075 // def 0.02
 kdr_nmax    = 20 // def 2
 
-kap_gbar    = 0.0614003391814
+kap_gbar    = 0.0614003391814*10
 kap_gbar_axonm = 5
 // These param values match the default values in kap.mod (except where indicated).
 kap_vhalfn  = 35 // def 11
