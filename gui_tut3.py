@@ -67,7 +67,7 @@ simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveF
 simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
 
 
-'''RxD code
+''' RxD code
 from neuron import h,rxd
 
 caDiff = 0.08
@@ -84,29 +84,32 @@ ip3rtau = 2000
 fc = 0.8
 fe = 0.2
 
-sim.cyt = rxd.Region(h.allsec(), nrn_region='i', geometry=rxd.FractionalVolume(fc, surface_fraction=1))
-sim.er = rxd.Region(h.allsec(), geometry=rxd.FractionalVolume(fe))
-sim.cyt_er_membrane = rxd.Region(h.allsec(), geometry=rxd.ScalableBorder(1, on_cell_surface=False))
+cyt = rxd.Region(h.allsec(), nrn_region='i', geometry=rxd.FractionalVolume(fc, surface_fraction=1))
+er = rxd.Region(h.allsec(), geometry=rxd.FractionalVolume(fe))
+cyt_er_membrane = rxd.Region(h.allsec(), geometry=rxd.ScalableBorder(1, on_cell_surface=False))
 
-sim.ca = rxd.Species([sim.cyt, sim.er], d=caDiff, name='ca', charge=2, initial=cac_init)
-sim.ip3 = rxd.Species(sim.cyt, d=ip3Diff, name='ip3', initial=ip3_init)
-sim.ip3r_gate_state = rxd.State(sim.cyt_er_membrane, initial=0.8)
+ca = rxd.Species([cyt, er], d=caDiff, name='ca', charge=2, initial=cac_init)
+ip3 = rxd.Species(cyt, d=ip3Diff, name='ip3', initial=ip3_init)
+ip3r_gate_state = rxd.State(cyt_er_membrane, initial=0.8)
 
-h_gate = sim.ip3r_gate_state[sim.cyt_er_membrane]
+h_gate = ip3r_gate_state[cyt_er_membrane]
 
-serca = rxd.MultiCompartmentReaction(sim.ca[sim.cyt], sim.ca[sim.er], gserca / ((kserca / (1000. * sim.ca[sim.cyt])) ** 2 + 1), membrane=sim.cyt_er_membrane, custom_dynamics=True)
-leak = rxd.MultiCompartmentReaction(sim.ca[sim.er], sim.ca[sim.cyt], gleak, gleak, membrane=sim.cyt_er_membrane)
+serca = rxd.MultiCompartmentReaction(ca[cyt], ca[er], gserca / ((kserca / (1000. * ca[cyt])) ** 2 + 1), membrane=cyt_er_membrane, custom_dynamics=True)
+leak = rxd.MultiCompartmentReaction(ca[er], ca[cyt], gleak, gleak, membrane=cyt_er_membrane)
 
-minf = sim.ip3[sim.cyt] * 1000. * sim.ca[sim.cyt] / (sim.ip3[sim.cyt] + kip3) / (1000. * sim.ca[sim.cyt] + kact)
-k = gip3r * (minf * h_gate) ** 3
-sim.ip3r = rxd.MultiCompartmentReaction(sim.ca[sim.er], sim.ca[sim.cyt], k, k, membrane=sim.cyt_er_membrane)
-sim.ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * sim.ca[sim.cyt] / (0.3)) - h_gate) / ip3rtau)
+minf = ip3[cyt] * 1000. * ca[cyt] / (ip3[cyt] + kip3) / (1000. * ca[cyt] + kact)
+kip3 = gip3r * (minf * h_gate) ** 3
+ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er_membrane)
+ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
+
+cyt_extra = rxd.Region(h.allsec(), nrn_region='i')
+rxd.options.enable.extracellular = True
+extracellular = rxd.Extracellular(xlo=-10, ylo=-10, zlo=-10, xhi = 200, yhi = 200, zhi = 1000, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
+na = rxd.Species([extracellular,cyt_extra], name= 'na', charge= 1, d=1.78)
+k = rxd.Species([extracellular, cyt_extra], name = 'k', charge = 1, d =1.78)
+
+
 '''
-
-
-
-
-
 
 # Create network and run simulation
 #sim.createSimulateAnalyze(netParams = netParams, simConfig = simConfig)    

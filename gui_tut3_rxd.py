@@ -1,5 +1,6 @@
 from netpyne import specs, sim
-from neuron import rxd, h, gui
+from neuron import  h, gui
+from neuron import crxd as rxd
 
 # --------------------------------
 # Network parameters
@@ -86,7 +87,7 @@ netParams.connParams['I->E'] = {
 # Simulation configuration
 # --------------------------------
 simConfig = specs.SimConfig()        # object of class SimConfig to store simulation configuration
-simConfig.duration = 1.0*1e3           # Duration of the simulation, in ms
+simConfig.duration = 0.5*1e3           # Duration of the simulation, in ms
 simConfig.hParams['v_init'] = -65  # set v_init to -65 mV
 simConfig.dt = 0.1                # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
@@ -128,7 +129,7 @@ if createSimulate:
         caDiff = 0.08
         ip3Diff = 1.41
         cac_init = 1e-4 #1e-2# 1e-5 # 1.e-4  # ~100 nM (100k less than extracellular); 1000 nM when increased
-        ip3_init = 1 #1e-6
+        ip3_init = 0 #1e-6
         gip3r = 12040 * 100
         gserca = 0.3913
         gleak = 6.020 #* 0.01 #1e6 #100
@@ -153,45 +154,40 @@ if createSimulate:
         leak = rxd.MultiCompartmentReaction(ca[er], ca[cyt], gleak, gleak, membrane=cyt_er_membrane)
 
         minf = ip3[cyt] * 1000. * ca[cyt] / (ip3[cyt] + kip3) / (1000. * ca[cyt] + kact)
-        k = gip3r * (minf * h_gate) ** 3
-        ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], k, k, membrane=cyt_er_membrane)
+        kip3 = gip3r * (minf * h_gate) ** 3
+        ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er_membrane)
         ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
 
         # v_init and dt set via netpyne
-        # h.finitialize(-65)  
-        # h.dt *= 10
+        #h.dt *= 10
 
-        # t_vec, ip3_vec = h.Vector(), h.Vector()
-        # t_vec.record(h._ref_t)
-        # ip3_vec.record(sim.net.cells[0].secs['soma']['hSec'](0.5)._ref_ip3i)
+        # # t_vec, ip3_vec = h.Vector(), h.Vector()
+        # # t_vec.record(h._ref_t)
+        # # ip3_vec.record(sim.net.cells[0].secs['soma']['hSec'](0.5)._ref_ip3i)
 
+
+        h.finitialize(-65) 
 
         def init_rxd(ca, ip3, cac_init, fc, fe):
             cae_init = (0.0017 - cac_init * fc) / fe 
             ca[er].concentration = cae_init
 
-            # for node in ip3.nodes:
-            #   if node.x > 0.5:
-            #       node.concentration = 2
-
-            # for node in ip3.nodes:
-            #     print node.concentration
-
         sim.fih.append(h.FInitializeHandler((init_rxd, (ca, ip3, cac_init, fc, fe))))
-
+         
+        
 
     # --------------------------------
     # Add extracellular
     # --------------------------------
-    addExtra = True
+    addExtra = False
     if addExtra:
         cyt_extra = rxd.Region(h.allsec(), nrn_region='i')
         rxd.options.enable.extracellular = True
-        extracellular = rxd.Extracellular(xlo=-10, ylo=-10, zlo=-10, xhi = netParams.sizeX, yhi = netParams.sizeZ, zhi = netParams.sizeY, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
+        extracellular = rxd.Extracellular(xlo=-10, ylo=-10, zlo=-10, xhi = 200, yhi = 1000, zhi = 200, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
         na = rxd.Species([extracellular,cyt_extra], name= 'na', charge= 1, d=1.78)
         k = rxd.Species([extracellular, cyt_extra], name = 'k', charge = 1, d =1.78)
 
-        # h.finitialize()
+        h.finitialize()
         # print 'initial state %g' % rxd_na[extracellular].states3d.mean()
         # na = rxd_na[cyt_extra]
         # k = rxd_k[cyt_extra]
@@ -214,34 +210,35 @@ if createSimulate:
     # --------------------------------
     # Plot RxD
     # --------------------------------
-    from matplotlib import pyplot
-    from matplotlib_scalebar import scalebar
+    if addExtra:
+        from matplotlib import pyplot
+        from matplotlib_scalebar import scalebar
 
-    pyplot.figure()
-    pyplot.imshow(k[extracellular].states3d[:].mean(2), interpolation='nearest', origin='upper')  #  extent=k[extracellular].extent('xy')
-    sb = scalebar.ScaleBar(1e-6)
-    sb.location='lower left'
-    ax = pyplot.gca()
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    pyplot.xlabel('x')
-    pyplot.ylabel('y')
-    ax.add_artist(sb)
-    pyplot.colorbar(label="$K^+$ (mM)")
+        pyplot.figure()
+        pyplot.imshow(k[extracellular].states3d[:].mean(2), interpolation='nearest', origin='upper')  #  extent=k[extracellular].extent('xy')
+        sb = scalebar.ScaleBar(1e-6)
+        sb.location='lower left'
+        ax = pyplot.gca()
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+        pyplot.xlabel('x')
+        pyplot.ylabel('y')
+        ax.add_artist(sb)
+        pyplot.colorbar(label="$K^+$ (mM)")
 
-    pyplot.figure()
-    pyplot.imshow(k[extracellular].states3d[:].mean(1), interpolation='nearest', origin='upper')  #  extent=k[extracellular].extent('xy')
-    sb = scalebar.ScaleBar(1e-6)
-    sb.location='lower left'
-    ax = pyplot.gca()
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    pyplot.xlabel('x')
-    pyplot.ylabel('z')
-    ax.add_artist(sb)
-    pyplot.colorbar(label="$K^+$ (mM)")
+        pyplot.figure()
+        pyplot.imshow(k[extracellular].states3d[:].mean(1), interpolation='nearest', origin='upper')  #  extent=k[extracellular].extent('xy')
+        sb = scalebar.ScaleBar(1e-6)
+        sb.location='lower left'
+        ax = pyplot.gca()
+        ax.xaxis.set_visible(False)
+        ax.yaxis.set_visible(False)
+        pyplot.xlabel('x')
+        pyplot.ylabel('z')
+        ax.add_artist(sb)
+        pyplot.colorbar(label="$K^+$ (mM)")
 
-    pyplot.show()
+        pyplot.show()
 
 
 
