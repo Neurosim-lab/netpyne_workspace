@@ -15,12 +15,12 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
-# netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
-# netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-# netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-# netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-# netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
+netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
+netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_cellParams.json')
@@ -87,7 +87,7 @@ netParams.connParams['I->E'] = {
 # Simulation configuration
 # --------------------------------
 simConfig = specs.SimConfig()        # object of class SimConfig to store simulation configuration
-simConfig.duration = 0.5*1e3           # Duration of the simulation, in ms
+simConfig.duration = 1.0*1e3           # Duration of the simulation, in ms
 simConfig.hParams['v_init'] = -65  # set v_init to -65 mV
 simConfig.dt = 0.1                # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
@@ -124,7 +124,7 @@ if createSimulate:
     # --------------------------------
     # Add RxD
     # --------------------------------
-    addRxD = True
+    addRxD = 0
     if addRxD:
         caDiff = 0.08
         ip3Diff = 1.41
@@ -173,19 +173,20 @@ if createSimulate:
             ca[er].concentration = cae_init
 
         sim.fih.append(h.FInitializeHandler((init_rxd, (ca, ip3, cac_init, fc, fe))))
-         
+        
+        # ca = rxd.Species([cyt, er], d=caDiff, name='ca', charge=2, initial=lambda nd: (0.0017 - cac_init * fc) / fe if nd.region == er else cac_init)
         
 
     # --------------------------------
     # Add extracellular
     # --------------------------------
-    addExtra = False
+    addExtra = 1
     if addExtra:
         cyt_extra = rxd.Region(h.allsec(), nrn_region='i')
         rxd.options.enable.extracellular = True
         extracellular = rxd.Extracellular(xlo=-10, ylo=-10, zlo=-10, xhi = 200, yhi = 1000, zhi = 200, dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
         na = rxd.Species([extracellular,cyt_extra], name= 'na', charge= 1, d=1.78)
-        k = rxd.Species([extracellular, cyt_extra], name = 'k', charge = 1, d =1.78)
+        k = rxd.Species([extracellular, cyt_extra], name = 'k', charge = 1, d = 2.62)
 
         h.finitialize()
         # print 'initial state %g' % rxd_na[extracellular].states3d.mean()
