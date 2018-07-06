@@ -11,7 +11,7 @@ from matplotlib_scalebar import scalebar
 rxd.nthread(4)
 
 # parameters
-ip3_init = 1  # Change value between 0 and 1: high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing
+ip3_init = 0  # Change value between 0 and 1: high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing
 caDiff = 0.08  # calcium diffusion coefficient
 ip3Diff = 1.41  # ip3 diffusion coefficient
 caci_init = 1e-5  # intracellular calcium initial concentration
@@ -52,6 +52,7 @@ h_gate = ip3r_gate_state[cyt_er_membrane]
 kip3 = gip3r * (minf * h_gate) ** 3
 ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er_membrane)
 ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
+
 
 
 # plotting functionss
