@@ -72,7 +72,6 @@ simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT'
 
 testing = 0
 if testing:
-    from time import time
     # --------------------------------
     # Instantiate network
     # --------------------------------
@@ -82,7 +81,6 @@ if testing:
     sim.net.connectCells()                # create connections between cells based on params
     sim.net.addStims()                    # add external stimulation to cells (IClamps etc)
 
-    startTime = time()
     import gui_rxd
 
     # --------------------------------
@@ -90,8 +88,7 @@ if testing:
     # --------------------------------
     sim.setupRecording()             # setup variables to record for each cell (spikes, V traces, etc)
     sim.simulate()
-    print time() - startTime
     sim.analyze()
 
-    gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
+    # gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
           
