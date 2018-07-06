@@ -19,28 +19,28 @@ netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6
 netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
-#netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
+netParams.loadCellParamsRule(label='CellRule', fileName='cells/CSTR_rxd_cellParams.json')
 #netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
 
-netParams.importCellParams(label='CellRule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
+# netParams.importCellParams(label='CellRule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
 
-# set 3d points
-offset, prevL = 0, 0
-somaL = netParams.cellParams['CellRule']['secs']['soma']['geom']['L']
-for secName, sec in netParams.cellParams['CellRule']['secs'].iteritems():
-    sec['geom']['pt3d'] = []
-    if secName in ['soma', 'Adend1', 'Adend2', 'Adend3']:  # set 3d geom of soma and Adends
-        sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
-        prevL = float(prevL + sec['geom']['L'])
-        sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
-    if secName in ['Bdend']:  # set 3d geom of Bdend
-        sec['geom']['pt3d'].append([offset+0, somaL, 0, sec['geom']['diam']])
-        sec['geom']['pt3d'].append([offset+sec['geom']['L'], somaL, 0, sec['geom']['diam']])        
-    if secName in ['axon']:  # set 3d geom of axon
-        sec['geom']['pt3d'].append([offset+0, 0, 0, sec['geom']['diam']])
-        sec['geom']['pt3d'].append([offset+0, -sec['geom']['L'], 0, sec['geom']['diam']])   
+# # set 3d points
+# offset, prevL = 0, 0
+# somaL = netParams.cellParams['CellRule']['secs']['soma']['geom']['L']
+# for secName, sec in netParams.cellParams['CellRule']['secs'].iteritems():
+#     sec['geom']['pt3d'] = []
+#     if secName in ['soma', 'Adend1', 'Adend2', 'Adend3']:  # set 3d geom of soma and Adends
+#         sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
+#         prevL = float(prevL + sec['geom']['L'])
+#         sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
+#     if secName in ['Bdend']:  # set 3d geom of Bdend
+#         sec['geom']['pt3d'].append([offset+0, somaL, 0, sec['geom']['diam']])
+#         sec['geom']['pt3d'].append([offset+sec['geom']['L'], somaL, 0, sec['geom']['diam']])        
+#     if secName in ['axon']:  # set 3d geom of axon
+#         sec['geom']['pt3d'].append([offset+0, 0, 0, sec['geom']['diam']])
+#         sec['geom']['pt3d'].append([offset+0, -sec['geom']['L'], 0, sec['geom']['diam']])   
 
-
+# netParams.saveCellParamsRule(label='CellRule', fileName='cells/CSTR_rxd_cellParams.json')
 
 ## Synaptic mechanism parameters
 netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
