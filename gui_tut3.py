@@ -70,7 +70,7 @@ simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT'
 
 #### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
 
-testing = 1
+testing = 0
 if testing:
     from time import time
     # --------------------------------
