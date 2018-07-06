@@ -15,13 +15,13 @@ h_bscale  =  0.154401580683
 h_ashift  =  118.919921764
 
 # geom properties
-somaL = 25.0612875049
-somaDiam = 27.1149930518
-axonL = 598.648623864
+somaL = 25.0612875049 * 0.5
+somaDiam = 27.1149930518 * 0.5
+axonL = 598.648623864 * 0.2
 axonDiam =  0.552948640016
-apicL = 294.615634554
+apicL = 294.615634554 * 0.2
 apicDiam = 2.86090460606
-bdendL = 265.920165144
+bdendL = 265.920165144 * 0.5
 bdendDiam = 1.02617341611
 
 # passive properties 
@@ -61,7 +61,7 @@ cal_gcalbar = 4.41583533572e-06
 can_gcanbar = 4.60717910591e-06
 cat_gcatbar = 1.00149259311e-06 * 0
 calginc = 1.0
-kBK_gpeak = 5.09733585163e-05 * 1e3
+kBK_gpeak = 5.09733585163e-05 * 0.5e3
 kBK_caVhminShift = 43.8900261407
 # cadad_depth = 0.119408607923
 # cadad_taur = 99.1146852282 

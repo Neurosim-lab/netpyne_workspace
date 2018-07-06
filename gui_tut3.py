@@ -11,26 +11,35 @@ netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [50,150], 'cellModel': 'HH'}
-# netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
-# netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
-# netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
-# netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-# netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
+netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
+netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
+netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
+netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 #netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
 #netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
 
 netParams.importCellParams(label='CellRule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
-#netParams.importCellParams(label='IT_rule', conds={'cellType': ['E','I']}, fileName='cells/SPI6.py', cellName='SPI6') 
 
-# remove channels
-# removeMechs = ['cadad',  'cat']#, 'nax']#'cal', 'kBK' 'can'] # 'nax', kBK'] #
-# secs = ['soma', 'Adend1', 'Adend2', 'Adend3', 'Bdend']
-# for mech in removeMechs:
-#     for sec in secs:
-#         del netParams.cellParams['CellRule']['secs'][sec]['mechs'][mech]
+# set 3d points
+offset, prevL = 0, 0
+somaL = netParams.cellParams['CellRule']['secs']['soma']['geom']['L']
+for secName, sec in netParams.cellParams['CellRule']['secs'].iteritems():
+    sec['geom']['pt3d'] = []
+    if secName in ['soma', 'Adend1', 'Adend2', 'Adend3']:  # set 3d geom of soma and Adends
+        sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
+        prevL = float(prevL + sec['geom']['L'])
+        sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
+    if secName in ['Bdend']:  # set 3d geom of Bdend
+        sec['geom']['pt3d'].append([offset+0, somaL, 0, sec['geom']['diam']])
+        sec['geom']['pt3d'].append([offset+sec['geom']['L'], somaL, 0, sec['geom']['diam']])        
+    if secName in ['axon']:  # set 3d geom of axon
+        sec['geom']['pt3d'].append([offset+0, 0, 0, sec['geom']['diam']])
+        sec['geom']['pt3d'].append([offset+0, -sec['geom']['L'], 0, sec['geom']['diam']])   
+
 
 
 ## Synaptic mechanism parameters
@@ -39,21 +48,23 @@ netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.025, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.01, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 ## Cell connectivity rules
 netParams.connParams['E->all'] = {
-  'preConds': {'cellType': 'E'}, 'postConds': {'y': [100,1000]},  #  E -> all (100-1000 um)
-  'probability': 0.1 ,                  # probability of connection
-  'weight': '5.0*post_ynorm',         # synaptic weight 
-  'delay': 'dist_3D/propVelocity',      # transmission delay (ms) 
+  'preConds': {'cellType': 'E'}, 'postConds': {'y': [100,500]},  #  E -> all (100-1000 um)
+  'probability': 0.1,                  # probability of connection
+  'weight': '0.04*post_ynorm',         # synaptic weight 
+  'delay': 'dist_3D/propVelocity',      # transmission delay (ms)
+  'sec': ['Adend1', 'Adend2', 'Adend3'], 
   'synMech': 'exc'}                     # synaptic mechanism 
 
 netParams.connParams['I->E'] = {
   'preConds': {'cellType': 'I'}, 'postConds': {'pop': ['E2','E4','E5']},       #  I -> E
-  'probability': '0.4*exp(-dist_3D/probLengthConst)',   # probability of connection
-  'weight': 1.0,                                      # synaptic weight 
+  'probability': '0.3*exp(-dist_3D/probLengthConst)',   # probability of connection
+  'weight': 0.01,                                      # synaptic weight 
   'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
+  'sec': ['soma','Bdend'], 
   'synMech': 'inh'}                                     # synaptic mechanism 
 
 
@@ -65,11 +76,11 @@ simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
 simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'net_lfp'   # Set file output name
-simConfig.printRunTime = 0.1    # print run time at interval (in sec) specified here (eg. 0.1)
 simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
-                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'}}#,
-                          # 'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
-                          # 'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
+                          'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
+                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'}}
+                          
                           # #'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
                           # 'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'},
                           # 'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
@@ -84,13 +95,12 @@ simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
                           # } 
 
 
-# simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/5, netParams.sizeY, netParams.sizeY/5)]
+simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/3, netParams.sizeY, netParams.sizeY/3)]
 
 simConfig.analysis['plotTraces']={'include': [0]}
 simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig':True, 'figSize': (9,3)}      # Plot a raster
-# simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
+simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
 
-# sim.createSimulateAnalyze()
 
 #### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
 
@@ -117,6 +127,5 @@ if testing:
     print time() - startTime
     sim.analyze()
 
-    #gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
-    #gui_rxd.plotExtracellularConcentration(species=gui_rxd.k)
-      
+    gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
+          
