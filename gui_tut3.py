@@ -4,19 +4,19 @@ import sys; reload(sys)
 # Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-netParams.sizeX = 200 # x-dimension (horizontal length) size in um
-netParams.sizeY = 1000 # y-dimension (vertical height or cortical depth) size in um
-netParams.sizeZ = 200 # z-dimension (horizontal length) size in um
+netParams.sizeX = 100 # x-dimension (horizontal length) size in um
+netParams.sizeY = 500 # y-dimension (vertical height or cortical depth) size in um
+netParams.sizeZ = 100 # z-dimension (horizontal length) size in um
 netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [100,300], 'cellModel': 'HH'}
-# netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [100,300], 'cellModel': 'HH'}
-# netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-# netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [300,600], 'cellModel': 'HH'}
-# netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-# netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
+netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
+netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
+netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
+netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
@@ -48,17 +48,26 @@ netParams.connParams['I->E'] = {
 
 # Simulation configuration
 simConfig = specs.SimConfig()       # object of class SimConfig to store simulation configuration
-simConfig.duration = 0.5*1e3        # Duration of the simulation, in ms
+simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
 simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
 simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
 simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'net_lfp'   # Set file output name
+simConfig.printRunTime = True     # print run time at interval (in sec) specified here (eg. 0.1)
 simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
                           'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
                           'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
-                          'ip3_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ip3i'},
-                          'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}} 
+                          'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
+                          #'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'}}
+                          # 'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
+                          # ,}
+
+                          # 'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          # 
+                          # 'ip3_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ip3i'},
+                          # } 
 
 
 # simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/5, netParams.sizeY, netParams.sizeY/5)]
@@ -70,8 +79,10 @@ simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveF
 # sim.createSimulateAnalyze()
 
 #### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
+
 testing = 1
 if testing:
+    from time import time
     # --------------------------------
     # Instantiate network
     # --------------------------------
@@ -81,6 +92,7 @@ if testing:
     sim.net.connectCells()                # create connections between cells based on params
     sim.net.addStims()                    # add external stimulation to cells (IClamps etc)
 
+    startTime = time()
     import gui_rxd
 
     # --------------------------------
@@ -88,6 +100,9 @@ if testing:
     # --------------------------------
     sim.setupRecording()             # setup variables to record for each cell (spikes, V traces, etc)
     sim.simulate()
+    print time() - startTime
     sim.analyze()
 
-    gui_rxd.plotExtracellularConcentration()
+    gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
+    #gui_rxd.plotExtracellularConcentration(species=gui_rxd.k)
+      
