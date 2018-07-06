@@ -16,12 +16,12 @@ if extra:
     naic_init, naoc_init = 10, 140
     kic_init, koc_init = 54.4, 2.5
     x, y, z = [0-margin, 100+margin], [-500-margin, 0+margin], [0-margin, 100+margin]
-    #cytosol = rxd.Region(h.allsec(), nrn_region='i')
+    cytosol = rxd.Region(h.allsec(), nrn_region='i')
     rxd.options.enable.extracellular = True
     extracellular = rxd.Extracellular(xlo=x[0], ylo=y[0], zlo=z[0], xhi=x[1], yhi=y[1], zhi=z[1], dx=5, volume_fraction=0.2, tortuosity=1.6) #vol_fraction and tortuosity associated w region 
     
-    #na = rxd.Species([extracellular,cytosol], name='na', charge=1, d=1.78, initial= lambda nd: naoc_init if isinstance(nd,rxd.node.NodeExtracellular) else naic_init)
-    #k = rxd.Species([extracellular, cytosol], name='k', charge=1, d=2.62, initial= lambda nd: koc_init if isinstance(nd,rxd.node.NodeExtracellular) else kic_init)
+    na = rxd.Species([extracellular,cytosol], name='na', charge=1, d=1.78, initial= lambda nd: naoc_init if isinstance(nd,rxd.node.NodeExtracellular) else naic_init)
+    k = rxd.Species([extracellular, cytosol], name='k', charge=1, d=2.62, initial= lambda nd: koc_init if isinstance(nd,rxd.node.NodeExtracellular) else kic_init)
 
     # plot funcs
     def plotExtracellularConcentration(species, extracellular=extracellular,  plane='xy'):

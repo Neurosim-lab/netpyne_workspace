@@ -19,8 +19,15 @@ netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [50,150],
 # netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
 
 ## Cell property rules
-netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
-netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
+#netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
+#netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
+
+cellRule = {'conds': {'cellModel': 'HH', 'cellType': 'E'},  'secs': {}}   # cell rule dict
+cellRule['secs']['soma'] = {'geom': {}, 'mechs': {}}                                                        # soma params dict
+cellRule['secs']['soma']['geom'] = {'diam': 18.8, 'L': 18.8, 'Ra': 123.0}                                   # soma geometry
+cellRule['secs']['soma']['mechs']['hh'] = {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.003, 'el': -70}          # soma hh mechanism
+cellRule['secs']['soma']['vinit'] = -71
+netParams.cellParams['PYR'] = cellRule  
 
 ## Synaptic mechanism parameters
 netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
@@ -28,7 +35,7 @@ netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 8.0, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.05, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 ## Cell connectivity rules
 netParams.connParams['E->all'] = {
@@ -56,12 +63,15 @@ simConfig.recordStep = 1             # Step size in ms to save data (eg. V trace
 simConfig.filename = 'net_lfp'   # Set file output name
 simConfig.printRunTime = True     # print run time at interval (in sec) specified here (eg. 0.1)
 simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
-                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
-                          'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
+                          #'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          #'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
                           'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
-                          'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
-                          #'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'}}
-                          # 'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
+                          #'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
+                          'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'},
+                          'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
+                          'nai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nai'},
+                          'nao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nao'}}
+
                           # ,}
 
                           # 'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
