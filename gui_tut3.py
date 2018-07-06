@@ -81,7 +81,7 @@ if testing:
     sim.net.connectCells()                # create connections between cells based on params
     sim.net.addStims()                    # add external stimulation to cells (IClamps etc)
 
-    import gui_rxd
+    import gui_tut3_rxd
 
     # --------------------------------
     # Simulate and analyze network
@@ -90,5 +90,5 @@ if testing:
     sim.simulate()
     sim.analyze()
 
-    # gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
+    # gui_tut3_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
           
