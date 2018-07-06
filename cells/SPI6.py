@@ -1,7 +1,9 @@
 # simplified corticospinal cell model (6 compartment)
 
 from neuron import h
-from math import exp,log
+from math import exp
+
+h.load_file('stdrun.hoc')
 
 Vrest       = -88.5366550238 
 h.v_init = -75.0413649414 

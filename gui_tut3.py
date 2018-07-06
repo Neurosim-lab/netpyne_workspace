@@ -22,12 +22,10 @@ netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [50,150],
 #netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
 #netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
 
-cellRule = {'conds': {'cellModel': 'HH', 'cellType': 'E'},  'secs': {}}   # cell rule dict
-cellRule['secs']['soma'] = {'geom': {}, 'mechs': {}}                                                        # soma params dict
-cellRule['secs']['soma']['geom'] = {'diam': 18.8, 'L': 18.8, 'Ra': 123.0}                                   # soma geometry
-cellRule['secs']['soma']['mechs']['hh'] = {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.003, 'el': -70}          # soma hh mechanism
-cellRule['secs']['soma']['vinit'] = -71
-netParams.cellParams['PYR'] = cellRule  
+netParams.importCellParams(label='IT_rule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
+#netParams.importCellParams(label='IT_rule', conds={'cellType': ['E','I']}, fileName='cells/SPI6.py', cellName='SPI6') 
+
+
 
 ## Synaptic mechanism parameters
 netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
@@ -35,7 +33,7 @@ netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.05, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.04, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 ## Cell connectivity rules
 netParams.connParams['E->all'] = {
@@ -113,6 +111,6 @@ if testing:
     print time() - startTime
     sim.analyze()
 
-    gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
+    #gui_rxd.plotExtracellularConcentration(species=gui_rxd.ca)
     #gui_rxd.plotExtracellularConcentration(species=gui_rxd.k)
       

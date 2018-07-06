@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 from matplotlib_scalebar import scalebar
 
 rxd.nthread(4)
-intra = 1
-extra = 1
+intra = 0
+extra = 0
 
 
 # ---------------------
