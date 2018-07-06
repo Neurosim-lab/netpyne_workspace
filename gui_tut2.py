@@ -54,7 +54,7 @@ simConfig.recordCells = [0]
 #simConfig.analysis['plotSpikeHist'] =  {'include': ['E','I'], 'yaxis': 'count'}
 simConfig.analysis['plotTraces']={'include': [0,4], 'oneFigPer': 'trace'}
 
-from netpyne import sim
-sim.createSimulateAnalyze()
+# from netpyne import sim
+# sim.createSimulateAnalyze()
 
 
