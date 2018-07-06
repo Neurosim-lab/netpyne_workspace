@@ -59,12 +59,12 @@ kap_vhalfl = -59.7867409796 #
 # other ion channel parameters 
 cal_gcalbar = 4.41583533572e-06
 can_gcanbar = 4.60717910591e-06
-cat_gcatbar = 1.00149259311e-06
+cat_gcatbar = 1.00149259311e-06 * 0
 calginc = 1.0
-kBK_gpeak = 5.09733585163e-05
+kBK_gpeak = 5.09733585163e-05 * 1e3
 kBK_caVhminShift = 43.8900261407
-cadad_depth = 0.119408607923
-cadad_taur = 99.1146852282 
+# cadad_depth = 0.119408607923
+# cadad_taur = 99.1146852282 
 
 gbar_nap = 0.00301840094235
 gbar_ican = 0.000106856758751
@@ -125,8 +125,8 @@ class CSTR6 ():
     sec.gcatbar_cat = cat_gcatbar
     sec.gpeak_kBK = kBK_gpeak
     sec.caVhmin_kBK = -46.08 + kBK_caVhminShift
-    sec.depth_cadad = cadad_depth
-    sec.taur_cadad = cadad_taur   
+    #sec.depth_cadad = cadad_depth
+    # sec.taur_cadad = cadad_taur   
     #sec.gbar_ican = gbar_ican
 
   def set_somag (self):
@@ -200,7 +200,7 @@ class CSTR6 ():
       sec.insert('cal') # cal_mig.mod
       sec.insert('can') # can_mig.mod
       sec.insert('cat') # cat_mig.mod
-      sec.insert('cadad') # cadad.mod - calcium decay 
+      # sec.insert('cadad') # cadad.mod - calcium decay 
       sec.insert('kBK') # kBK.mod - ca and v dependent k channel
       #sec.insert('nap') # nap_sidi.mod
       #sec.insert('ican') # ican_sidi.mod

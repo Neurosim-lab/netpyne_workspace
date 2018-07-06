@@ -22,9 +22,15 @@ netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 1, 'yRange': [50,150],
 #netParams.loadCellParamsRule(label='CellRule', fileName='cells/IT2_reduced_rxd_cellParams.json')
 #netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
 
-netParams.importCellParams(label='IT_rule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
+netParams.importCellParams(label='CellRule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
 #netParams.importCellParams(label='IT_rule', conds={'cellType': ['E','I']}, fileName='cells/SPI6.py', cellName='SPI6') 
 
+# remove channels
+# removeMechs = ['cadad',  'cat']#, 'nax']#'cal', 'kBK' 'can'] # 'nax', kBK'] #
+# secs = ['soma', 'Adend1', 'Adend2', 'Adend3', 'Bdend']
+# for mech in removeMechs:
+#     for sec in secs:
+#         del netParams.cellParams['CellRule']['secs'][sec]['mechs'][mech]
 
 
 ## Synaptic mechanism parameters
@@ -32,8 +38,8 @@ netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e
 netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e': -75}  # GABA synaptic mechanism
 
 # Stimulation parameters
-netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.04, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.025, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 ## Cell connectivity rules
 netParams.connParams['E->all'] = {
@@ -59,16 +65,16 @@ simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
 simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'net_lfp'   # Set file output name
-simConfig.printRunTime = True     # print run time at interval (in sec) specified here (eg. 0.1)
+simConfig.printRunTime = 0.1    # print run time at interval (in sec) specified here (eg. 0.1)
 simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
-                          #'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
-                          #'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
-                          'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
-                          #'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
-                          'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'},
-                          'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
-                          'nai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nai'},
-                          'nao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nao'}}
+                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'}}#,
+                          # 'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'},
+                          # 'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
+                          # #'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
+                          # 'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'},
+                          # 'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
+                          # 'nai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nai'},
+                          # 'nao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nao'}}
 
                           # ,}
 

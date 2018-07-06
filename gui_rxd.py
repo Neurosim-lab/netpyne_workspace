@@ -4,8 +4,8 @@ from matplotlib import pyplot as plt
 from matplotlib_scalebar import scalebar
 
 rxd.nthread(4)
-intra = 0
-extra = 0
+intra = 1
+extra = 1
 
 
 # ---------------------
@@ -52,8 +52,8 @@ if intra:
     ip3Diff = 1.41
     caci_init = 1e-5# 1e-4
     caco_init = 2.0
-    ip3_init = 1e-4#0 # 1
-    gip3r = 12040 #* 100
+    ip3_init = 0 #1e-4#0 # 1
+    gip3r = 12040 * 100
     gserca = 0.3913
     gleak = 6.020 
     kserca = 0.1
@@ -70,7 +70,9 @@ if intra:
 
     # create Species 
     ca = rxd.Species([cyt, er, extracellular], d=caDiff, name='ca', charge=2, 
-        initial=lambda nd: caco_init if isinstance(nd,rxd.node.NodeExtracellular) else (0.0017 - caci_init * fc) / fe if nd.region == er else caci_init)
+         initial=lambda nd: caco_init if isinstance(nd,rxd.node.NodeExtracellular) else (0.0017 - caci_init * fc) / fe if nd.region == er else caci_init)
+    #ca = rxd.Species([cyt, er], d=caDiff, name='ca', charge=2, 
+    #    initial=lambda nd: (0.0017 - caci_init * fc) / fe if nd.region == er else caci_init)
     ip3 = rxd.Species(cyt, d=ip3Diff, name='ip3', initial=ip3_init)
     ip3r_gate_state = rxd.State(cyt_er_membrane, initial=0.8)
 
