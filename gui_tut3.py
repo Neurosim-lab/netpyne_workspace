@@ -20,27 +20,6 @@ netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6
 
 ## Cell property rules
 netParams.loadCellParamsRule(label='CellRule', fileName='cells/CSTR_rxd_cellParams.json')
-#netParams.cellParams['CellRule']['conds'] = {'cellType': ['E','I']}
-
-# netParams.importCellParams(label='CellRule', conds={'cellType': ['E','I']}, fileName='cells/CSTR6.py', cellName='CSTR6') 
-
-# # set 3d points
-# offset, prevL = 0, 0
-# somaL = netParams.cellParams['CellRule']['secs']['soma']['geom']['L']
-# for secName, sec in netParams.cellParams['CellRule']['secs'].iteritems():
-#     sec['geom']['pt3d'] = []
-#     if secName in ['soma', 'Adend1', 'Adend2', 'Adend3']:  # set 3d geom of soma and Adends
-#         sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
-#         prevL = float(prevL + sec['geom']['L'])
-#         sec['geom']['pt3d'].append([offset+0, prevL, 0, sec['geom']['diam']])
-#     if secName in ['Bdend']:  # set 3d geom of Bdend
-#         sec['geom']['pt3d'].append([offset+0, somaL, 0, sec['geom']['diam']])
-#         sec['geom']['pt3d'].append([offset+sec['geom']['L'], somaL, 0, sec['geom']['diam']])        
-#     if secName in ['axon']:  # set 3d geom of axon
-#         sec['geom']['pt3d'].append([offset+0, 0, 0, sec['geom']['diam']])
-#         sec['geom']['pt3d'].append([offset+0, -sec['geom']['L'], 0, sec['geom']['diam']])   
-
-# netParams.saveCellParamsRule(label='CellRule', fileName='cells/CSTR_rxd_cellParams.json')
 
 ## Synaptic mechanism parameters
 netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.8, 'tau2': 5.3, 'e': 0}  # NMDA synaptic mechanism
@@ -80,19 +59,6 @@ simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
                           'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
                           'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
                           'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'}}
-                          
-                          # #'ica_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ica'}}
-                          # 'ki_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ki'},
-                          # 'ko_soma': {'sec': 'soma', 'loc':0.5, 'var': 'ko'},
-                          # 'nai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nai'},
-                          # 'nao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'nao'}}
-
-                          # ,}
-
-                          # 'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
-                          # 
-                          # 'ip3_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ip3i'},
-                          # } 
 
 
 simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/3, netParams.sizeY, netParams.sizeY/3)]
