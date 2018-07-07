@@ -11,7 +11,7 @@ from matplotlib_scalebar import scalebar
 rxd.nthread(4)
 
 # parameters
-ip3_init = 0  # Change value between 0 and 1: high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing
+ip3_init = 1  # Change value between 0 and 1: high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing
 caDiff = 0.08  # calcium diffusion coefficient
 ip3Diff = 1.41  # ip3 diffusion coefficient
 caci_init = 1e-5  # intracellular calcium initial concentration
