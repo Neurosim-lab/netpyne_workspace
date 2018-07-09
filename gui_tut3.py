@@ -55,6 +55,7 @@ simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
 simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'net_lfp'   # Set file output name
+simConfig.enableRxD = True      # enable RxD
 simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
                           'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
                           'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
@@ -66,14 +67,15 @@ simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.si
 simConfig.analysis['plotTraces']={'include': [0]}
 simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig':True, 'figSize': (9,3)}      # Plot a raster
 simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
+simConfig.analysis['plotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabel': 'extracellular'}
 
 
-#### BELOW THIS LINE SHOULD BE DONE IN JUPYTER NB #####
+#### BELOW THIS LINE SHOULD BE DONE VIA NETPYNE-UI AND JUPYTER NB #####
 
 testing = 0
 if testing:
     # --------------------------------
-    # Instantiate network
+    # Instantiate network (VIA NETPYNE-UI)
     # --------------------------------
     sim.initialize(netParams, simConfig)  # create network object and set cfg and net params
     sim.net.createPops()                  # instantiate network populations
@@ -81,12 +83,17 @@ if testing:
     sim.net.connectCells()                # create connections between cells based on params
     sim.net.addStims()                    # add external stimulation to cells (IClamps etc)
 
+    # --------------------------------
+    # Add RxD objects (VIA JUPYTER NB)
+    # --------------------------------
+
     import gui_tut3_rxd
+    sim.net.rxd['species']['ca'] = gui_tut3_rxd.ca
+    sim.net.rxd['regions']['extracellular'] = gui_tut3_rxd.extracellular
 
     # --------------------------------
-    # Simulate and analyze network
+    # Simulate and analyze network (VIA NETPYNE-UI)
     # --------------------------------
     sim.setupRecording()             # setup variables to record for each cell (spikes, V traces, etc)
     sim.simulate()
-    sim.analyze()
-    #gui_tut3_rxd.plotExtracellularConcentration(species=gui_rxd.ca)       
+    sim.analyze()      

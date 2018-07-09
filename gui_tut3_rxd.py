@@ -1,8 +1,5 @@
 from neuron import h
 from neuron import crxd as rxd
-from matplotlib import pyplot as plt
-from matplotlib_scalebar import scalebar
-
 
 # ---------------------
 # rxd intracellular and extracellular
@@ -54,20 +51,4 @@ ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er
 ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
 
 
-
-# plotting functionss
-def plotExtracellularConcentration(species, extracellular=extracellular,  plane='xy'):
-    fig=plt.figure(figsize=(4,10))
-    plane2mean = {'xz': 1, 'xy': 2}
-    plt.imshow(species[extracellular].states3d[:].mean(plane2mean[plane]).T, interpolation='nearest', origin='upper')  #  extent=k[extracellular].extent('xy')
-    sb = scalebar.ScaleBar(1e-6)
-    sb.location='lower left'
-    ax = plt.gca()
-    ax.xaxis.set_visible(False)
-    ax.yaxis.set_visible(False)
-    plt.xlabel(plane[0])
-    plt.ylabel(plane[1])
-    ax.add_artist(sb)
-    plt.colorbar(label="$%s^+$ (mM)"%(species.name))
-    return fig
 
