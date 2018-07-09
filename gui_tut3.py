@@ -97,3 +97,4 @@ if testing:
     sim.setupRecording()             # setup variables to record for each cell (spikes, V traces, etc)
     sim.simulate()
     sim.analyze()      
+    sim.analyze()
