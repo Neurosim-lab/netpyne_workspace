@@ -65,7 +65,7 @@ simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
 simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(netParams.sizeY/3, netParams.sizeY, netParams.sizeY/3)]
 
 simConfig.analysis['plotTraces']={'include': [0]}
-simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig':True, 'figSize': (9,3)}      # Plot a raster
+simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFigs': True, 'figSize': (9,3)}      # Plot a raster
 simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
 simConfig.analysis['plotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabel': 'extracellular'}
 
