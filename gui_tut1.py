@@ -47,5 +47,4 @@ simConfig.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'},
 simConfig.recordStep = 1 			# Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'model_output'  # Set file output name
 simConfig.savePickle = False 		# Save params, network and sim output to pickle file
-simConfig.recordCells = [0]
-# simConfig.analysis['plotTraces'] = {'include': [0]}
+simConfig.analysis['plotTraces'] = {'include': [0]}
