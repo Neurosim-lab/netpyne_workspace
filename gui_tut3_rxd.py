@@ -50,6 +50,3 @@ kip3 = gip3r * (minf * h_gate) ** 3
 ip3r = rxd.MultiCompartmentReaction(ca[er], ca[cyt], kip3, kip3, membrane=cyt_er_membrane)
 ip3rg = rxd.Rate(h_gate, (1. / (1 + 1000. * ca[cyt] / (0.3)) - h_gate) / ip3rtau)
 
-# code to update netpyne_geppetto structures
-netpyne_geppetto.sim.net.rxd['species']['ca'] = ca
-netpyne_geppetto.sim.net.rxd['regions']['extracellular'] = extracellular
