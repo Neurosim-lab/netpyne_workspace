@@ -11,7 +11,7 @@ netParams.popParams['I'] = {'cellType': 'FS', 'numCells': 3, 'cellModel':''}
 
 ## Cell property rules
 netParams.importCellParams(label='PT_rule', conds={'cellType': 'PT'}, fileName='cells/PTcell.hoc', cellName='PTcell') 
-#netParams.importCellParams(label='FS_rule', conds={'cellType': 'FS'}, fileName='cells/FS3.hoc', cellName='FScell') 
+netParams.importCellParams(label='FS_rule', conds={'cellType': 'FS'}, fileName='cells/FS3.hoc', cellName='FScell') 
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.0, 'start': 1}
