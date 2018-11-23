@@ -45,6 +45,7 @@ simConfig.verbose = False  			# Show detailed messages
 simConfig.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'},
 						 'V_dend': {'sec': 'dend', 'loc': 1.0, 'var':'v'}}  # Dict with traces to record
 simConfig.recordStep = 1 			# Step size in ms to save data (eg. V traces, LFP, etc)
-simConfig.filename = 'model_output'  # Set file output name
-simConfig.savePickle = False 		# Save params, network and sim output to pickle file
+simConfig.filename = 'gui_tut1'  # Set file output name
+simConfig.saveJson = False		# Save params, network and sim output to pickle file
 simConfig.analysis['plotTraces'] = {'include': [0]}
+
