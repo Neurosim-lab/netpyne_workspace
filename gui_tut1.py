@@ -3,20 +3,20 @@ from netpyne import specs
 # Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
+## Cell parameters
+secs = {}	# dict with section info
+secs['soma'] = {'geom': {}, 'mechs': {}}
+secs['soma']['geom'] = {'diam': 20, 'L': 20, 'Ra': 100.0, 'cm':1}  	 									# soma geometry
+secs['soma']['mechs']['hh'] =  {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.003, 'el': -70} 		# soma hh mechanism
+secs['dend']['geom'] = {'diam': 5.0, 'L': 150.0, 'Ra': 100.0, 'cm': 1}
+secs['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}										# soma geometry
+secs['dend']['mechs']['pas'] =  {'g': 0.0004, 'e': -70} 		 		# soma hh mechanism
+netParams.cellParams['PYR'] = {'secs': secs}  												# add dict to list of cell parameters
+
+	
+
 ## Population parameters
 netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 20, 'cellModel':''}
-
-## Cell property rules
-cellRule = {'conds': {'cellType': 'pyr'},  'secs': {}} 	# cell rule dict
-cellRule['secs']['soma'] = {'geom': {}, 'mechs': {}}  											# soma params dict
-cellRule['secs']['soma']['geom'] = {'diam': 20, 'L': 20, 'Ra': 100.0, 'cm':1}  									# soma geometry
-cellRule['secs']['soma']['mechs']['hh'] = {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.003, 'el': -70}  		# soma hh mechanisms
-cellRule['secs']['dend'] = {'geom': {}, 'topol': {}, 'mechs': {}}  								# dend params dict
-cellRule['secs']['dend']['geom'] = {'diam': 5.0, 'L': 150.0, 'Ra': 100.0, 'cm': 1}							# dend geometry
-cellRule['secs']['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}						# dend topology 
-cellRule['secs']['dend']['mechs']['pas'] = {'g': 0.0004, 'e': -70} 										# dend mechanisms
-netParams.cellParams['pyr_rule'] = cellRule  												# add dict to list of cell parameters
-
 
  # Stimulation parameters
 netParams.stimSourceParams['IClamp1'] = {'type': 'IClamp', 'dur': 10, 'del': 20, 'amp':0.6}
@@ -49,3 +49,5 @@ simConfig.filename = 'gui_tut1'  # Set file output name
 simConfig.saveJson = False		# Save params, network and sim output to pickle file
 simConfig.analysis['plotTraces'] = {'include': [0]}
 
+netpyne_geppetto.netParams=netParams
+netpyne_geppetto.simConfig=simConfig
