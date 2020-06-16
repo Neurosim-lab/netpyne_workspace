@@ -18,7 +18,7 @@ netParams.cellParams['pyr'] = {'secs': secs}  												# add dict to list of 
 	
 
 ## Population parameters
-netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 20}
+netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 40}
 
  # Stimulation parameters
 netParams.stimSourceParams['IClamp1'] = {'type': 'IClamp', 'dur': 5, 'del': 20, 'amp': 0.1}
@@ -34,7 +34,7 @@ netParams.connParams['E->E'] = {
     'preConds': {'pop': 'E'},
     'postConds': {'pop': 'E'},
     'weight': 0.005,                    # weight of each connection
-    'probability': 0.2,
+    'probability': 0.1,
     'delay': 5,     # delay min=0.2, mean=13.0, var = 1.4
     'synMech': 'exc',
     'sec': 'dend'}
@@ -52,7 +52,7 @@ simConfig.recordStep = 0.1 			# Step size in ms to save data (eg. V traces, LFP,
 simConfig.filename = 'gui_tut1'  # Set file output name
 simConfig.saveJson = False		# Save params, network and sim output to pickle file
 simConfig.analysis['iplotTraces'] = {'include': [0], 'overlay': True}
-simConfig.analysis['iplotRaster'] = {'markerSize': 10}
+simConfig.analysis['iplotRaster'] = {'markerSize': 5, 'showFig': True}
  
 #from netpyne import sim
 #sim.createSimulateAnalyze(netParams, simConfig)
