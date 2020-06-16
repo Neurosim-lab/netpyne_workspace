@@ -6,20 +6,22 @@ netParams = specs.NetParams()  # object of class NetParams to store the network 
 ## Cell parameters
 secs = {}	# dict with section info
 secs['soma'] = {'geom': {}, 'mechs': {}}
-secs['soma']['geom'] = {'diam': 20, 'L': 20, 'Ra': 100.0, 'cm':1}  	 									# soma geometry
-secs['soma']['mechs']['hh'] =  {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.003, 'el': -70} 		# soma hh mechanism
-secs['dend']['geom'] = {'diam': 5.0, 'L': 150.0, 'Ra': 100.0, 'cm': 1}
-secs['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}										# soma geometry
-secs['dend']['mechs']['pas'] =  {'g': 0.0004, 'e': -70} 		 		# soma hh mechanism
-netParams.cellParams['PYR'] = {'secs': secs}  												# add dict to list of cell parameters
+secs['soma']['geom'] = {'diam': 12, 'L': 12, 'Ra': 100.0, 'cm': 1}  	 									# soma geometry
+secs['soma']['mechs']['hh'] = {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.0003, 'el': -54.3} 		# soma hh mechanism
 
+secs['dend'] = {'geom': {}, 'mechs': {}}
+secs['dend']['geom'] = {'diam': 1.0, 'L': 200.0, 'Ra': 100.0, 'cm': 1}
+secs['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}										# soma geometry
+secs['dend']['mechs']['pas'] = {'g': 0.001, 'e': -70} 		 		# soma hh mechanism
+
+netParams.cellParams['pyr'] = {'secs': secs}  												# add dict to list of cell parameters
 	
 
 ## Population parameters
-netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 20, 'cellModel':''}
+netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 20}
 
  # Stimulation parameters
-netParams.stimSourceParams['IClamp1'] = {'type': 'IClamp', 'dur': 10, 'del': 20, 'amp':0.6}
+netParams.stimSourceParams['IClamp1'] = {'type': 'IClamp', 'dur': 5, 'del': 20, 'amp': 0.1}
 netParams.stimTargetParams['IClamp1->cell0'] = {'source': 'IClamp1', 'conds': {'cellList':[0]}, 'sec':'dend', 'loc':1.0}
 
 
@@ -29,12 +31,13 @@ netParams.synMechParams['exc'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 1.0, 'e
 
 # Connectivity parameters
 netParams.connParams['E->E'] = {
-    'preConds': {'pop': 'E'}, 'postConds': {'pop': 'E'},
-    'weight': 0.03,                    # weight of each connection
-    'probability': 0.3,
+    'preConds': {'pop': 'E'},
+    'postConds': {'pop': 'E'},
+    'weight': 0.005,                    # weight of each connection
+    'probability': 0.2,
     'delay': 5,     # delay min=0.2, mean=13.0, var = 1.4
     'synMech': 'exc',
-    'sec': 'soma'}
+    'sec': 'dend'}
 
 # Simulation options
 simConfig = specs.SimConfig()		# object of class SimConfig to store simulation configuration
@@ -44,10 +47,14 @@ simConfig.dt = 0.1 				# Internal integration timestep to use
 simConfig.verbose = False  			# Show detailed messages 
 simConfig.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'},
 						 'V_dend': {'sec': 'dend', 'loc': 1.0, 'var':'v'}}  # Dict with traces to record
-simConfig.recordStep = 1 			# Step size in ms to save data (eg. V traces, LFP, etc)
+simConfig.recordCells = [0]
+simConfig.recordStep = 0.1 			# Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'gui_tut1'  # Set file output name
 simConfig.saveJson = False		# Save params, network and sim output to pickle file
-simConfig.analysis['plotTraces'] = {'include': [0]}
-
+simConfig.analysis['iplotTraces'] = {'include': [0], 'overlay': True}
+simConfig.analysis['iplotRaster'] = {'markerSize': 10}
+ 
+#from netpyne import sim
+#sim.createSimulateAnalyze(netParams, simConfig)
 netpyne_geppetto.netParams=netParams
 netpyne_geppetto.simConfig=simConfig
