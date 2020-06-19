@@ -56,5 +56,6 @@ simConfig.analysis['iplotRaster'] = {'markerSize': 5, 'showFig': True}
  
 #from netpyne import sim
 #sim.createSimulateAnalyze(netParams, simConfig)
-netpyne_geppetto.netParams=netParams
-netpyne_geppetto.simConfig=simConfig
+if __name__ == '__main__':
+    netpyne_geppetto.netParams=netParams
+    netpyne_geppetto.simConfig=simConfig
