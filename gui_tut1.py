@@ -6,17 +6,16 @@ netParams = specs.NetParams()  # object of class NetParams to store the network 
 ## Cell parameters
 secs = {}	# dict with section info
 secs['soma'] = {'geom': {}, 'mechs': {}}
-secs['soma']['geom'] = {'diam': 12, 'L': 12, 'Ra': 100.0, 'cm': 1}  	 									# soma geometry
+secs['soma']['geom'] = {'diam': 12, 'L': 12, 'Ra': 100.0, 'cm': 1}  	 						# soma geometry
 secs['soma']['mechs']['hh'] = {'gnabar': 0.12, 'gkbar': 0.036, 'gl': 0.0003, 'el': -54.3} 		# soma hh mechanism
 
 secs['dend'] = {'geom': {}, 'mechs': {}}
 secs['dend']['geom'] = {'diam': 1.0, 'L': 200.0, 'Ra': 100.0, 'cm': 1}
-secs['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}										# soma geometry
-secs['dend']['mechs']['pas'] = {'g': 0.001, 'e': -70} 		 		# soma hh mechanism
+secs['dend']['topol'] = {'parentSec': 'soma', 'parentX': 1.0, 'childX': 0}						# dend geometry
+secs['dend']['mechs']['pas'] = {'g': 0.001, 'e': -70} 		 		                            # dend pas mechanism
 
-netParams.cellParams['pyr'] = {'secs': secs}  												# add dict to list of cell parameters
+netParams.cellParams['pyr'] = {'secs': secs}  												    # add dict to list of cell parameters
 	
-
 ## Population parameters
 netParams.popParams['E'] = {'cellType': 'pyr', 'numCells': 40}
 
@@ -54,7 +53,7 @@ simConfig.saveJson = False		# Save params, network and sim output to pickle file
 simConfig.analysis['iplotTraces'] = {'include': [0], 'overlay': True}
 simConfig.analysis['iplotRaster'] = {'markerSize': 5, 'showFig': True}
  
-#from netpyne import sim
-#sim.createSimulateAnalyze(netParams, simConfig)
-netpyne_geppetto.netParams=netParams
-netpyne_geppetto.simConfig=simConfig
+from netpyne import sim
+sim.createSimulateAnalyze(netParams, simConfig)
+#netpyne_geppetto.netParams=netParams
+#netpyne_geppetto.simConfig=simConfig

@@ -27,7 +27,7 @@ p_ena         = 42
 
 // h-current 
 h_erev      = -37.0 
-h_gbar      = 6.6129403774e-05 //* 0.1 // mho/cm^2
+h_gbar      = 6.6129403774e-05 * 0.1 // mho/cm^2
 h_gbar_tuft = 0.00565 // mho/cm^2 (based on Harnett 2015 J Neurosci)
 
 // params for migliore h-current distribution
