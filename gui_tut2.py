@@ -5,8 +5,8 @@ from netpyne import specs
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
 ## Cell property rules
-netParams.importCellParams(label='PT', fileName='../cells/PTcell.hoc', cellName='PTcell') 
-netParams.importCellParams(label='FS', fileName='../cells/FScell.hoc', cellName='FScell') 
+netParams.importCellParams(label='PT', fileName='cells/PTcell.hoc', cellName='PTcell') 
+netParams.importCellParams(label='FS', fileName='cells/FScell.hoc', cellName='FScell') 
 
 ## Population parameters
 netParams.popParams['E'] = {'cellType': 'PT', 'numCells': 3, 'yNormRange': [0.2, 0.4]}
