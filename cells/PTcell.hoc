@@ -41,9 +41,9 @@ kdmc_gbar_axonm = 20
 
 // spiking currents
 nax_gbar    =  0.0153130368342 // 0.0 S/cm2 (Hay11 = 20,000 pS/um2 = 20,000*1e-12*1e8 = 2 S/cm2)
-nax_gbar_axonm = 5
-nax_gbar_somam = 1
-nax_gbar_dendm = 1
+nax_gbar_axonm = 5 
+nax_gbar_somam = 1 * 5
+nax_gbar_dendm = 1 * 0.3 
 mnax = 0.0 // slope of linear decrease of nax in dends (with distance from soma)
 
 kdr_gbar    = 0.0084715576279*2
@@ -3509,8 +3509,8 @@ proc init_once() {
     } else if (usemigliore) { 
       insert hd // h-current in Ih_migliore.mod
       ehd_hd=-30 // params taken from Migliore 2012 modeldb (fig-5a.hoc)
-      elk_hd=-65.61
-      clk_hd=0.7
+      elk_hd=-86
+      clk_hd=0.2
     } else {
       insert h           // h-current in h_bs.mod
     }
@@ -3552,6 +3552,7 @@ proc init_once() {
   forsec "axon" {     // axon has I_KD, and more I_Na, I_KA, I_KDR, and no I_h
     // K-D current in soma and axon only
     insert kdmc
+    Ra = rall * 0.005
   }
   setaxong() // set conductance values for axon
 }
@@ -3572,10 +3573,10 @@ proc reconfig () {
 proc setallprop () {
   forall {
     // passive
-    g_pas       = 1/rm
+    g_pas       = 1/rm * 0.5
     Ra          = rall
     cm          = cap
-    e_pas       = Vrest
+    e_pas       = Vrest * 0.9
     // h-current
     if (useharnett) {
       erev_h15 = h_erev
@@ -3606,6 +3607,10 @@ proc setallprop () {
     // reversal potentials
     ena         = p_ena
     ek          = p_ek
+  }
+
+  forsec "axon" {    
+    Ra = rall * 0.005
   }
 }
 

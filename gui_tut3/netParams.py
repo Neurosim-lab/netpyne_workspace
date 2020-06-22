@@ -1,6 +1,6 @@
 from netpyne import specs
 
-from cfg import cfg
+from cfg import simConfig
 
 #------------------------------------------------------------------------------
 #
@@ -10,24 +10,24 @@ from cfg import cfg
 
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-netParams.sizeX = cfg.sizeX # x-dimension (horizontal length) size in um
-netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth) size in um
-netParams.sizeZ = cfg.sizeZ # z-dimension (horizontal length) size in um
+netParams.sizeX = simConfig.sizeX # x-dimension (horizontal length) size in um
+netParams.sizeY = simConfig.sizeY # y-dimension (vertical height or cortical depth) size in um
+netParams.sizeZ = simConfig.sizeZ # z-dimension (horizontal length) size in um
 netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 #------------------------------------------------------------------------------
 ## Population parameters
-netParams.popParams['E2'] = {'cellType': 'E', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
-netParams.popParams['I2'] = {'cellType': 'I', 'numCells': 10, 'yRange': [50,150], 'cellModel': 'HH'}
-netParams.popParams['E4'] = {'cellType': 'E', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
-netParams.popParams['I4'] = {'cellType': 'I', 'numCells': 10, 'yRange': [150,300], 'cellModel': 'HH'}
-netParams.popParams['E5'] = {'cellType': 'E', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
-netParams.popParams['I5'] = {'cellType': 'I', 'numCells': 10, 'ynormRange': [0.6,1.0], 'cellModel': 'HH'}
+netParams.popParams['E2'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [50,150]}
+netParams.popParams['I2'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [50,150]}
+netParams.popParams['E4'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [150,300]}
+netParams.popParams['I4'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [150,300]}
+netParams.popParams['E5'] = {'cellType': 'pyr', 'numCells': 10, 'ynormRange': [0.6,1.0]}
+netParams.popParams['I5'] = {'cellType': 'pyr', 'numCells': 10, 'ynormRange': [0.6,1.0]}
 
 #------------------------------------------------------------------------------
 ## Cell property rules
-netParams.loadCellParamsRule(label='CellRule', fileName='CSTR_cellParams.json')
+netParams.loadCellParamsRule(label='pyr', fileName='CSTR_cellParams.json')
 
 #------------------------------------------------------------------------------
 ## Synaptic mechanism parameters
@@ -62,7 +62,7 @@ netParams.connParams['I->E'] = {
 ## RxD params
 
 ### constants
-constants = {'ip3_init': cfg.ip3_init,  # initial ip3 concentration 
+constants = {'ip3_init': simConfig.ip3_init,  # initial ip3 concentration 
             'caDiff': 0.08,  # calcium diffusion coefficient
             'ip3Diff': 1.41,  # ip3 diffusion coefficient
             'caci_init': 1e-5,  # intracellular calcium initial concentration

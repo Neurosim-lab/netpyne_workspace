@@ -24,8 +24,8 @@ soma_kctin=0.0001
 
 soma {
      nseg=1
-     L=27
-     diam=29
+     L= 27
+     diam = 29
 
 	insert pas
 	cm=1.2            //microF/cm2
@@ -61,7 +61,7 @@ soma {
 
 axon {
 	nseg=1
-	L=115*2
+	L=1 //115*2
 	diam=1.5
 	
 	insert pas
@@ -81,7 +81,7 @@ axon {
 
 dend {
 	nseg=1
-	L=2*22*2 
+	L=1 //2*22*2 
 	diam=7
 
 
