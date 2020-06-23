@@ -55,8 +55,19 @@ soma {
      insert kctin
      gkcbar_kctin=soma_kctin
 
-     insert cadyn
+    insert cadyn
 
+    insert kBK
+    tau_kBK = 1.0
+    caPmax_kBK = 1.0
+    caPmin_kBK = 0.0
+    caVhh_kBK = 0.002
+    caVhmin_kBK = -2.1899738592999967
+    gpeak_kBK = 0.01529200755489
+    caPh_kBK = 0.002
+    caPk_kBK = 1.0
+    k_kBK = 17.0
+    caVhmax_kBK = 155.67
 }
 
 axon {
