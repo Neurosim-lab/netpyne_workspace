@@ -1,6 +1,5 @@
 from netpyne import specs
 
-from cfg import simConfig
 
 #------------------------------------------------------------------------------
 #
@@ -10,24 +9,26 @@ from cfg import simConfig
 
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-netParams.sizeX = simConfig.sizeX # x-dimension (horizontal length) size in um
-netParams.sizeY = simConfig.sizeY # y-dimension (vertical height or cortical depth) size in um
-netParams.sizeZ = simConfig.sizeZ # z-dimension (horizontal length) size in um
+netParams.sizeX = 100 # x-dimension (horizontal length) size in um
+netParams.sizeY = 500 # y-dimension (vertical height or cortical depth) size in um
+netParams.sizeZ = 100 # z-dimension (horizontal length) size in um
 netParams.propVelocity = 100.0 # propagation velocity (um/ms)
 netParams.probLengthConst = 150.0 # length constant for conn probability (um)
 
 #------------------------------------------------------------------------------
-## Population parameters
-netParams.popParams['E2'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [50,150]}
-netParams.popParams['I2'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [50,150]}
-netParams.popParams['E4'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [150,300]}
-netParams.popParams['I4'] = {'cellType': 'pyr', 'numCells': 10, 'yRange': [150,300]}
-netParams.popParams['E5'] = {'cellType': 'pyr', 'numCells': 10, 'ynormRange': [0.6,1.0]}
-netParams.popParams['I5'] = {'cellType': 'pyr', 'numCells': 10, 'ynormRange': [0.6,1.0]}
+## Cell parameters
+netParams.loadCellParams(label='PYR', fileName='cells/CSTR_cellParams.json')
+netParams.importCellParams(label='FS', fileName='cells/FScell.hoc', cellName='FScell') 
+
 
 #------------------------------------------------------------------------------
-## Cell property rules
-netParams.loadCellParamsRule(label='pyr', fileName='CSTR_cellParams.json')
+## Population parameters
+netParams.popParams['E2'] = {'cellType': 'PYR', 'numCells': 10, 'yRange': [50,150]}
+netParams.popParams['I2'] = {'cellType': 'FS', 'numCells': 10, 'yRange': [50,150]}
+netParams.popParams['E4'] = {'cellType': 'PYR', 'numCells': 10, 'yRange': [150,300]}
+netParams.popParams['I4'] = {'cellType': 'FS', 'numCells': 10, 'yRange': [150,300]}
+netParams.popParams['E5'] = {'cellType': 'PYR', 'numCells': 10, 'ynormRange': [0.6,1.0]}
+netParams.popParams['I5'] = {'cellType': 'FS', 'numCells': 10, 'ynormRange': [0.6,1.0]}
 
 #------------------------------------------------------------------------------
 ## Synaptic mechanism parameters
@@ -37,7 +38,7 @@ netParams.synMechParams['inh'] = {'mod': 'Exp2Syn', 'tau1': 0.6, 'tau2': 8.5, 'e
 #------------------------------------------------------------------------------
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 20, 'noise': 0.3}
-netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['E','I']}, 'weight': 0.01, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
+netParams.stimTargetParams['bkg->all'] = {'source': 'bkg', 'conds': {'cellType': ['PYR','FS']}, 'weight': 0.01, 'sec': 'soma', 'delay': 'max(1, normal(5,2))', 'synMech': 'exc'}
 
 #------------------------------------------------------------------------------
 ## Cell connectivity rules
@@ -62,7 +63,12 @@ netParams.connParams['I->E'] = {
 ## RxD params
 
 ### constants
-constants = {'ip3_init': simConfig.ip3_init,  # initial ip3 concentration 
+
+## Change ip3_init from 0 to 0.1 to observe multiscale effect:  
+## netParams.rxdParams['constants']['ip3_init'] = 0.1
+## high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing 
+
+constants = {'ip3_init': 0.0,  # initial ip3 concentration 
             'caDiff': 0.08,  # calcium diffusion coefficient
             'ip3Diff': 1.41,  # ip3 diffusion coefficient
             'caci_init': 1e-5,  # intracellular calcium initial concentration
@@ -116,3 +122,42 @@ netParams.rxdParams['multicompartmentReactions'] = mcReactions
 ### rates
 netParams.rxdParams['rates'] = {'ip3rg': {'species': h_gate, 'rate': '(1. / (1 + 1000. * ca[cyt] / (0.3)) - %s) / ip3rtau'%(h_gate)}}
 
+
+
+
+#------------------------------------------------------------------------------
+#
+# SIMULATION CONFIGURATION
+#
+#------------------------------------------------------------------------------
+
+# Run parameters
+simConfig = specs.SimConfig()       # object of class simConfig to store simulation configuration
+simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
+simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
+simConfig.dt = 0.1                  # Internal integration timestep to use
+simConfig.verbose = False            # Show detailed messages 
+simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
+simConfig.filename = 'rxd_net'   # Set file output name
+
+
+# Recording/plotting parameters
+simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
+                          'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
+                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
+                          'cao_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cao'}}
+
+simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(int(netParams.sizeY/3), int(netParams.sizeY), int(netParams.sizeY/3))]
+
+simConfig.analysis['plotTraces']={'include': [0]}
+simConfig.analysis['plotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': True, 'figSize': (9,3)}      # Plot a raster
+simConfig.analysis['plotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'NFFT': 256, 'noverlap': 48, 'nperseg': 64, 'saveFig': True} 
+simConfig.analysis['plotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabel': 'ecs'}
+
+
+
+# ------------------------------------------------------------
+# Run sim
+# ------------------------------------------------------------
+from netpyne import sim
+sim.createSimulateAnalyze(netParams, simConfig)

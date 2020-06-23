@@ -60,7 +60,7 @@ simConfig.savePickle = False 		# Save params, network and sim output to pickle f
 simConfig.analysis['iplotRaster'] =  {'markerSize': 5, 'showFig': True}
 simConfig.analysis['iplotTraces'] = {'include': [0,4], 'oneFigPer': 'trace'}
 
-from netpyne import sim
-sim.createSimulateAnalyze()
+# from netpyne import sim
+# sim.createSimulateAnalyze()
 
 

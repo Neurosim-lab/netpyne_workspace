@@ -550,11 +550,5 @@
     "v_init": -75.8801688855,
     "erev_ih": -37.0
   },
-  "secLists": {},
-  "conds": {
-    "cellType": [
-      "E",
-      "I"
-    ]
-  }
+  "secLists": {}
 }
