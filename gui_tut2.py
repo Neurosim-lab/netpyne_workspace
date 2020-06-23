@@ -57,7 +57,7 @@ simConfig.recordStep = 0.1 			# Step size in ms to save data (eg. V traces, LFP,
 simConfig.filename = 'model_output'  # Set file output name
 simConfig.savePickle = False 		# Save params, network and sim output to pickle file
 
-#simConfig.analysis['iplotRaster'] =  {'showFig': True}
+simConfig.analysis['iplotRaster'] =  {'markerSize': 5, 'showFig': True}
 simConfig.analysis['iplotTraces'] = {'include': [0,4], 'oneFigPer': 'trace'}
 
 from netpyne import sim
