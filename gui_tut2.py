@@ -5,12 +5,12 @@ from netpyne import specs
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
 ## Cell property rules
-netParams.importCellParams(label='PT', fileName='cells/PTcell.hoc', cellName='PTcell') 
+netParams.importCellParams(label='PT', fileName='cells/PTcell.hoc', cellName='PTcell', somaAtOrigin=True) 
 netParams.importCellParams(label='SRI', fileName='cells/SRI.hoc', cellName='SRI') 
 
 ## Population parameters
-netParams.popParams['E'] = {'cellType': 'PT', 'numCells': 3}
-netParams.popParams['I'] = {'cellType': 'SRI', 'numCells': 3}
+netParams.popParams['E'] = {'cellType': 'PT', 'numCells': 2}
+netParams.popParams['I'] = {'cellType': 'SRI', 'numCells': 2}
 
 
 # Stimulation parameters
@@ -31,7 +31,7 @@ netParams.synMechParams['GABA'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 18, 'e
 netParams.connParams['E->I'] = {
     'preConds': {'pop': 'E'},
     'postConds': {'pop': 'I'},
-    'weight': 0.01,  # weight of each connection
+    'weight': 0.015,  # weight of each connection
     'delay': 5,     
     'synMech': 'AMPA',
     'sec': 'soma'}
@@ -39,7 +39,7 @@ netParams.connParams['E->I'] = {
 netParams.connParams['I->E'] = {
      'preConds': {'pop': 'I'},
      'postConds': {'pop': ['E']},
-     'weight': 0.01,                    # weight of each connection
+     'weight': 0.015,                    # weight of each connection
      'delay': 5,     
      'synMech': 'GABA',
      'sec': 'soma'}
@@ -58,7 +58,7 @@ simConfig.filename = 'model_output'  # Set file output name
 simConfig.savePickle = False 		# Save params, network and sim output to pickle file
 
 simConfig.analysis['iplotRaster'] =  {'markerSize': 5, 'showFig': True}
-simConfig.analysis['iplotTraces'] = {'include': [0,4], 'oneFigPer': 'trace'}
+simConfig.analysis['iplotTraces'] = {'include': [0,2], 'oneFigPer': 'trace'}
 
 # from netpyne import sim
 # sim.createSimulateAnalyze()
