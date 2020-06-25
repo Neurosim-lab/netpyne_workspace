@@ -5,12 +5,12 @@ from netpyne import specs
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
 ## Cell property rules
-netParams.importCellParams(label='PT', fileName='cells/PTcell.hoc', cellName='PTcell', somaAtOrigin=True) 
-netParams.importCellParams(label='SRI', fileName='cells/SRI.hoc', cellName='SRI') 
+netParams.importCellParams(label='PYR', fileName='cells/PTcell.hoc', cellName='PTcell', somaAtOrigin=True) 
+netParams.importCellParams(label='INT', fileName='cells/SRI.hoc', cellName='SRI') 
 
 ## Population parameters
-netParams.popParams['E'] = {'cellType': 'PT', 'numCells': 2}
-netParams.popParams['I'] = {'cellType': 'SRI', 'numCells': 2}
+netParams.popParams['E'] = {'cellType': 'PYR', 'numCells': 2}
+netParams.popParams['I'] = {'cellType': 'INT', 'numCells': 2}
 
 
 # Stimulation parameters
