@@ -159,5 +159,8 @@ simConfig.analysis['plotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabel
 # ------------------------------------------------------------
 # Run sim
 # ------------------------------------------------------------
-from netpyne import sim
-sim.createSimulateAnalyze(netParams, simConfig)
+if __name__ == '__main__':
+    netpyne_geppetto.netParams=netParams
+    netpyne_geppetto.simConfig=simConfig
+# from netpyne import sim
+# sim.createSimulateAnalyze(netParams, simConfig)
