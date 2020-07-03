@@ -53,8 +53,10 @@ simConfig.saveJson = False		# Save params, network and sim output to pickle file
 simConfig.analysis['iplotTraces'] = {'include': [0], 'overlay': True}
 simConfig.analysis['iplotRaster'] = {'markerSize': 5, 'showFig': True}
  
-#from netpyne import sim
-#sim.createSimulateAnalyze(netParams, simConfig)
+
 if __name__ == '__main__':
     netpyne_geppetto.netParams=netParams
     netpyne_geppetto.simConfig=simConfig
+
+#from netpyne import sim
+#sim.createSimulateAnalyze(netParams, simConfig)
