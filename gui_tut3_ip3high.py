@@ -68,7 +68,7 @@ netParams.connParams['I->E'] = {
 ## netParams.rxdParams['constants']['ip3_init'] = 0.1
 ## high ip3 -> ER Ca released to Cyt -> kBK channels open -> less firing 
 
-constants = {'ip3_init': 0.0,  # initial ip3 concentration 
+constants = {'ip3_init': 0.1,  # initial ip3 concentration 
             'caDiff': 0.08,  # calcium diffusion coefficient
             'ip3Diff': 1.41,  # ip3 diffusion coefficient
             'caci_init': 1e-5,  # intracellular calcium initial concentration
