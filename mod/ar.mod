@@ -12,7 +12,7 @@ UNITS {
 }
 
 NEURON {
-    SUFFIX ar
+    SUFFIX ar_hnn
     NONSPECIFIC_CURRENT i
     RANGE gbar, i
 }

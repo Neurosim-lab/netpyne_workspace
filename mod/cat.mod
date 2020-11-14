@@ -12,7 +12,7 @@ UNITS {
 }
 
 NEURON {
-    SUFFIX cat
+    SUFFIX cat_hnn
     NONSPECIFIC_CURRENT i   : not causing [Ca2+] influx
     RANGE gbar, i
 }
