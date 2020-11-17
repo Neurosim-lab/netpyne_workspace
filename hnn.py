@@ -461,8 +461,7 @@ cellParams = specs.CellParams()
 # ------------------------------------------------------------------------------------
 # L2 Pyr cell rule
 # ------------------------------------------------------------------------------------
-cellParams['L2Pyr_rule'] = {
-        'conds': {'cellType': 'L2Pyr'},
+cellParams['L2Pyr'] = {
         'secLists': {
             'apical': ['apical_trunk', 'apical_1', 'apical_tuft', 'apical_oblique'],
             'basal': ['basal_1', 'basal_2', 'basal_3']},
@@ -563,9 +562,9 @@ cellParams['L2Pyr_rule'] = {
         }}}
 
 ## add biophysics (ions and mechs) to L2Pyr dendrites
-somaL = cellParams['L2Pyr_rule']['secs']['soma']['geom']['L']
+somaL = cellParams['L2Pyr']['secs']['soma']['geom']['L']
 
-for sec in [sec for secName, sec in cellParams['L2Pyr_rule']['secs'].items() if secName != 'soma']:
+for sec in [sec for secName, sec in cellParams['L2Pyr']['secs'].items() if secName != 'soma']:
     sec['ions'] = {
         'k': {'e': -77.0, 'i': 54.4, 'o': 2.5},
         'na': {'e': 50.0, 'i': 10.0, 'o': 140.0}}
@@ -579,15 +578,14 @@ for sec in [sec for secName, sec in cellParams['L2Pyr_rule']['secs'].items() if 
         'km': {'gbar': cfg.L2Pyr_dend_gbar_km}}
 
 ## set vinit
-for sec in cellParams['L2Pyr_rule']['secs'].values():
+for sec in cellParams['L2Pyr']['secs'].values():
     sec['vinit'] = -71.46
 
 
 # ------------------------------------------------------------------------------------
 # L2 Basket cell rule
 # ------------------------------------------------------------------------------------
-cellParams['L2Basket_rule'] = {
-        'conds': {'cellType': 'L2Basket'},
+cellParams['L2Basket'] = {
         'secs': {
             'soma': {
                 'geom': {'L': 39.0, 
@@ -607,15 +605,14 @@ cellParams['L2Basket_rule'] = {
         }}}
 
 ## set vinit
-for secName,sec in cellParams['L2Basket_rule']['secs'].items():
+for secName,sec in cellParams['L2Basket']['secs'].items():
     sec['vinit'] = -64.9737
 
 # ------------------------------------------------------------------------------------
 # L5 Pyramidal cell rule
 # ------------------------------------------------------------------------------------
 
-cellParams['L5Pyr_rule'] = {
-        'conds': {'cellType': 'L5Pyr'},
+cellParams['L5Pyr'] = {
         'secLists': {
             'apical': ['apical_trunk', 'apical_1', 'apical_2', 'apical_tuft', 'apical_oblique'],
             'basal': ['basal_1', 'basal_2', 'basal_3']},
@@ -742,9 +739,9 @@ gbar_ar = {  # values calculated for each segment as: seg.gbar_ar = 1e-6 * np.ex
     'basal_3': [1.3930561e-06, 1.6233631e-06, 1.8917456e-06, 2.2044984e-06, 2.5689571e-06]}
 
 
-somaL = cellParams['L5Pyr_rule']['secs']['soma']['geom']['L']
+somaL = cellParams['L5Pyr']['secs']['soma']['geom']['L']
 
-for secName, sec in [(secName, sec) for secName, sec in cellParams['L5Pyr_rule']['secs'].items() if secName != 'soma']:
+for secName, sec in [(secName, sec) for secName, sec in cellParams['L5Pyr']['secs'].items() if secName != 'soma']:
     sec['ions'] = {
         'ca': {'e': 132.4579341637009, 'i': 5e-05, 'o': 2.0},
         'k': {'e': -77.0, 'i': 54.4, 'o': 2.5},
@@ -768,7 +765,7 @@ for secName, sec in [(secName, sec) for secName, sec in cellParams['L5Pyr_rule']
         'km': {'gbar': cfg.L5Pyr_dend_gbar_km}}
 
 ## set vinit
-for secName,sec in cellParams['L5Pyr_rule']['secs'].items():
+for secName,sec in cellParams['L5Pyr']['secs'].items():
     if secName == 'apical_1':
         sec['vinit'] = -71.32
     elif secName == 'apical_2':
@@ -782,8 +779,7 @@ for secName,sec in cellParams['L5Pyr_rule']['secs'].items():
 # ------------------------------------------------------------------------------------
 # L5 Basket cell rule
 # ------------------------------------------------------------------------------------
-cellParams['L5Basket_rule'] = {
-        'conds': {'cellType': 'L5Basket'},
+cellParams['L5Basket'] = {
         'secs': {
             'soma': {
                 'geom': {'L': 39.0, 
@@ -803,7 +799,7 @@ cellParams['L5Basket_rule'] = {
         }}}
 
 ## set vinit
-for secName,sec in cellParams['L5Basket_rule']['secs'].items():
+for secName,sec in cellParams['L5Basket']['secs'].items():
     sec['vinit'] = -64.9737
 
 
