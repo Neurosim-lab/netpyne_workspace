@@ -1768,4 +1768,4 @@ if cfg.gaussInputs:
         'delay': delayDistFunc.format(**synParams),
         'synsPerConn': 3,
         'sec': ['basal_2', 'basal_3','apical_oblique']}
-
+'''
