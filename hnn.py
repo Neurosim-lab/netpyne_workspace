@@ -557,7 +557,7 @@ cellParams['L2Pyr'] = {
                         'diam': cfg.L2Pyr_basal3_diam, 
                         'nseg': 5,
                     'pt3d': [[0.0, -50.0, 0.0, cfg.L2Pyr_basal3_diam],
-                        [0.0+cfg.L2Pyr_basal3_L/np.sqrt(2), -50.0-cfg.L2Pyr_basal3_L/np.sqrt(2), 0.0, cfg.L2Pyr_basal3_diam]]},
+                        [float(0.0+cfg.L2Pyr_basal3_L/np.sqrt(2)), float(-50.0-cfg.L2Pyr_basal3_L/np.sqrt(2)), 0.0, cfg.L2Pyr_basal3_diam]]},
                 'topol': {'childX': 0.0, 'parentSec': 'basal_1', 'parentX': 1.0}
         }}}
 
@@ -710,7 +710,7 @@ cellParams['L5Pyr'] = {
                         'diam': cfg.L5Pyr_basal2_diam, 
                         'nseg': 5,
                     'pt3d': [[0.0, -50.0, 0.0, cfg.L5Pyr_basal2_diam],
-                        [0.0-cfg.L5Pyr_basal2_L/np.sqrt(2), -50-cfg.L5Pyr_basal2_L/np.sqrt(2), 0.0, cfg.L5Pyr_basal2_diam]]},
+                        [float(0.0-cfg.L5Pyr_basal2_L/np.sqrt(2)), float(-50-cfg.L5Pyr_basal2_L/np.sqrt(2)), 0.0, cfg.L5Pyr_basal2_diam]]},
                 'topol': {'childX': 0.0, 'parentSec': 'basal_1', 'parentX': 1.0}
             },
             'basal_3': {
@@ -720,7 +720,7 @@ cellParams['L5Pyr'] = {
                         'diam': cfg.L5Pyr_basal3_diam, 
                         'nseg': 5,
                     'pt3d': [[0.0, -50.0, 0.0, cfg.L5Pyr_basal3_diam],
-                        [0.0+cfg.L5Pyr_basal2_L/np.sqrt(2), -50-cfg.L5Pyr_basal2_L/np.sqrt(2), 0.0, cfg.L5Pyr_basal3_diam]]},
+                        [float(0.0+cfg.L5Pyr_basal2_L/np.sqrt(2)), float(-50-cfg.L5Pyr_basal2_L/np.sqrt(2)), 0.0, cfg.L5Pyr_basal3_diam]]},
                 'topol': {
                     'childX': 0.0,
                     'parentSec': 'basal_1',
@@ -823,6 +823,10 @@ netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth) si
 netParams.sizeZ = ((cfg.N_pyr_y * cfg.gridSpacingPyr) - 1) * cfg.xzScaling # z-dimension (horizontal depth) size in um
 netParams.shape = 'cuboid'
 
+netParams.cellsVisualizationSpacingMultiplierX = 50 
+netParams.cellsVisualizationSpacingMultiplierY = 1
+netParams.cellsVisualizationSpacingMultiplierZ = 50 
+
 
 # ----------------------------------------------------------------------------
 # Cell parameters
@@ -845,8 +849,8 @@ yeven = np.arange(0, cfg.N_pyr_y, 2)
 yodd = np.arange(1, cfg.N_pyr_y, 2)
 coords = [pos for pos in it.product(xzero, yeven)] + [pos for pos in it.product(xone, yodd)]
 coords_sorted = sorted(coords, key=lambda pos: pos[1])
-L2BasketLocs = [{'x': coord[0]*cfg.xzScaling, 'y': layersI['L2'][0], 'z': coord[1]*cfg.xzScaling} for coord in coords_sorted]
-L5BasketLocs = [{'x': coord[0]*cfg.xzScaling, 'y': layersI['L5'][0], 'z': coord[1]*cfg.xzScaling} for coord in coords_sorted]
+L2BasketLocs = [{'x': int(coord[0]*cfg.xzScaling), 'y': int(layersI['L2'][0]), 'z': int(coord[1]*cfg.xzScaling)} for coord in coords_sorted]
+L5BasketLocs = [{'x': int(coord[0]*cfg.xzScaling), 'y': int(layersI['L5'][0]), 'z': int(coord[1]*cfg.xzScaling)} for coord in coords_sorted]
 
 # create popParams
 netParams.popParams['L2Basket'] = {'cellType':  'L2Basket', 'cellModel': 'HH_simple', 'numCells': len(L2BasketLocs), 'cellsList': L2BasketLocs} 
@@ -1097,13 +1101,13 @@ if cfg.localConn:
 
 # Location of external inputs
 xrange = np.arange(cfg.N_pyr_x)
-extLocX = xrange[int((len(xrange) - 1) // 2)]
+extLocX = int(xrange[int((len(xrange) - 1) // 2)])
 zrange = np.arange(cfg.N_pyr_y)
-extLocZ = xrange[int((len(zrange) - 1) // 2)]
+extLocZ = int(xrange[int((len(zrange) - 1) // 2)])
 extLocY = 650 # positive depth of L5 relative to L2; doesn't affect weight/delay calculations
 
-conn1to1Pyr = np.array([range(0,cellsPerPop['L2Pyr']), range(0,cellsPerPop['L2Pyr'])]).T
-conn1to1Basket = np.array([range(0,cellsPerPop['L2Basket']), range(0,cellsPerPop['L2Basket'])]).T
+conn1to1Pyr = np.array([range(0,cellsPerPop['L2Pyr']), range(0,cellsPerPop['L2Pyr'])]).T.tolist()
+conn1to1Basket = np.array([range(0,cellsPerPop['L2Basket']), range(0,cellsPerPop['L2Basket'])]).T.tolist()
 
 if cfg.rhythmicInputs:
 
