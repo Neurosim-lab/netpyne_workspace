@@ -135,8 +135,8 @@ cfg.gaussInputs = True
 
 # Params from 'ERPYes100Trials.param'; copied from cfg.__dict__
 cfg.__dict__.update({
- 'duration': 170.0,
- 'tstop': 170,
+ 'duration': 50.0,
+ 'tstop': 50,
  'dt': 0.05,
  'hParams': {'celsius': 37, 'v_init': -65, 'clamp_resist': 0.001},
  'cache_efficient': False,
@@ -303,8 +303,8 @@ cfg.__dict__.update({
  'L5Pyr_dend_gbar_km': 200.0,
  'L5Pyr_dend_gbar_cat': 0.0002,
  'L5Pyr_dend_gbar_ar': 1e-06,
- 'N_pyr_x': 10,
- 'N_pyr_y': 10,
+ 'N_pyr_x': 2,
+ 'N_pyr_y': 2,
  'gbar_L2Pyr_L2Pyr_ampa': 0.0005,
  'gbar_L2Pyr_L2Pyr_nmda': 0.0005,
  'gbar_L2Basket_L2Pyr_gabaa': 0.05,
@@ -1769,4 +1769,3 @@ if cfg.gaussInputs:
         'synsPerConn': 3,
         'sec': ['basal_2', 'basal_3','apical_oblique']}
 
-'''
