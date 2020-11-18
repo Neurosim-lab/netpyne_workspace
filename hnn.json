@@ -1,6 +1,9 @@
 {
     "net": {
         "params": {
+            "cellsVisualizationSpacingMultiplierX": 50, 
+            "cellsVisualizationSpacingMultiplierY": 1, 
+            "cellsVisualizationSpacingMultiplierZ": 50, 
             "cellParams": {
                 "L2Basket": {
                     "secs": {
@@ -11963,9 +11966,6 @@
             3
         ],
         "gridSpacingPyr": 1,
-        "guiSpacingMultiplierX": 50, 
-        "guiSpacingMultiplierY": 1, 
-        "guiSpacingMultiplierZ": 50, 
         "hParams": {
             "celsius": 37,
             "clamp_resist": 0.001,
