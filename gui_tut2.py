@@ -4,37 +4,43 @@ from netpyne import specs
 # Network parameters
 netParams = specs.NetParams()  # object of class NetParams to store the network parameters
 
-## Population parameters
-netParams.popParams['E'] = {'cellType': 'PT', 'numCells': 3, 'cellModel':''}
-netParams.popParams['I'] = {'cellType': 'FS', 'numCells': 3, 'cellModel':''}
-
-
 ## Cell property rules
-netParams.importCellParams(label='PT_rule', conds={'cellType': 'PT'}, fileName='cells/PTcell.hoc', cellName='PTcell') 
-netParams.importCellParams(label='FS_rule', conds={'cellType': 'FS'}, fileName='cells/FS3.hoc', cellName='FScell') 
+netParams.importCellParams(label='PYR', fileName='cells/PTcell.hoc', cellName='PTcell', somaAtOrigin=True) 
+netParams.importCellParams(label='INT', fileName='cells/SRI.hoc', cellName='SRI') 
+
+## Population parameters
+netParams.popParams['E'] = {'cellType': 'PYR', 'numCells': 2}
+netParams.popParams['I'] = {'cellType': 'INT', 'numCells': 2}
+
 
 # Stimulation parameters
 netParams.stimSourceParams['bkg'] = {'type': 'NetStim', 'rate': 40, 'noise': 0.0, 'start': 1}
-netParams.stimTargetParams['bkg->PYR1'] = {'source': 'bkg', 'sec': 'soma', 'conds': {'pop': ['E']}, 'weight': 0.12, 'delay': 5}
-
+netParams.stimTargetParams['bkg->PYR1'] = { 'source': 'bkg',
+                                            'conds': {'pop': ['E']},
+                                            'sec': 'apic_1',
+                                            'synMech': 'AMPA',
+                                            'weight': 0.2,
+                                            'delay': 5}
 
 # Synaptic mechanism parameters
-netParams.synMechParams['AMPA'] = {'mod': 'Exp2Syn', 'tau1': 0.5, 'tau2': 1.0, 'e': 0}
-netParams.synMechParams['GABA'] = {'mod': 'Exp2Syn', 'tau1': 0.5, 'tau2': 1.0, 'e': -120}
+netParams.synMechParams['AMPA'] = {'mod': 'Exp2Syn', 'tau1': 0.01, 'tau2': 0.5, 'e': 20}
+netParams.synMechParams['GABA'] = {'mod': 'Exp2Syn', 'tau1': 0.1, 'tau2': 18, 'e': -90}
 
 
 # Connectivity parameters
 netParams.connParams['E->I'] = {
-    'preConds': {'pop': 'E'}, 'postConds': {'pop': ['I']},
-    'weight': 0.03,                    # weight of each connection
+    'preConds': {'pop': 'E'},
+    'postConds': {'pop': 'I'},
+    'weight': 0.015,  # weight of each connection
     'delay': 5,     
     'synMech': 'AMPA',
     'sec': 'soma'}
 
 netParams.connParams['I->E'] = {
-     'preConds': {'pop': 'I'}, 'postConds': {'pop': ['E']},
-     'weight': 0.4,                    # weight of each connection
-     'delay': 15,     
+     'preConds': {'pop': 'I'},
+     'postConds': {'pop': ['E']},
+     'weight': 0.015,                    # weight of each connection
+     'delay': 5,     
      'synMech': 'GABA',
      'sec': 'soma'}
 
@@ -42,19 +48,22 @@ netParams.connParams['I->E'] = {
 # Simulation options
 simConfig = specs.SimConfig()		# object of class SimConfig to store simulation configuration
 
-simConfig.duration = 0.2*1e3 			# Duration of the simulation, in ms
+simConfig.duration = 0.5*1e3 			# Duration of the simulation, in ms
 simConfig.dt = 0.1			# Internal integration timestep to use
-simConfig.verbose = False  			# Show detailed messages 
+simConfig.hParams['celsius'] = 34
+simConfig.verbose = False  # Show detailed messages 
 simConfig.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'}}  # Dict with traces to record
-simConfig.recordStep = 1 			# Step size in ms to save data (eg. V traces, LFP, etc)
+simConfig.recordStep = 0.1 			# Step size in ms to save data (eg. V traces, LFP, etc)
 simConfig.filename = 'model_output'  # Set file output name
 simConfig.savePickle = False 		# Save params, network and sim output to pickle file
-simConfig.recordCells = [0]
 
-#simConfig.analysis['plotSpikeHist'] =  {'include': ['E','I'], 'yaxis': 'count'}
-simConfig.analysis['plotTraces']={'include': [0,4], 'oneFigPer': 'trace'}
+simConfig.analysis['iplotRaster'] =  {'markerSize': 5, 'showFig': True}
+simConfig.analysis['iplotTraces'] = {'include': [0,2], 'oneFigPer': 'trace'}
 
-# from netpyne import sim
-# sim.createSimulateAnalyze()
+if __name__ == '__main__':
+    netpyne_geppetto.netParams=netParams
+    netpyne_geppetto.simConfig=simConfig
 
 
+#from netpyne import sim
+#sim.createSimulateAnalyze(netParams, simConfig)
