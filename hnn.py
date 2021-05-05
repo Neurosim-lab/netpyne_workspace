@@ -823,9 +823,7 @@ netParams.sizeY = cfg.sizeY # y-dimension (vertical height or cortical depth) si
 netParams.sizeZ = ((cfg.N_pyr_y * cfg.gridSpacingPyr) - 1) * cfg.xzScaling # z-dimension (horizontal depth) size in um
 netParams.shape = 'cuboid'
 
-netParams.cellsVisualizationSpacingMultiplierX = 50 
-netParams.cellsVisualizationSpacingMultiplierY = 1
-netParams.cellsVisualizationSpacingMultiplierZ = 50 
+netParams.cellsVisualizationSpacingMultiplier = [50, 1, 50] 
 
 
 # ----------------------------------------------------------------------------
@@ -965,7 +963,7 @@ if cfg.localConn:
         'preConds': {'pop': 'L2Basket'}, 
         'postConds': {'pop': 'L2Basket'},
         'synMech': synParams['synMech'],
-        'weight': weightDistFunc.format(**synParams),
+        'weight': weightDistFunc.format(**synParams), 
         'delay': delayDistFunc.format(**synParams),
         'synsPerConn': 1,
         'sec': ['soma']}

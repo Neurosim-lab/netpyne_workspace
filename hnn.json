@@ -1,9 +1,7 @@
 {
     "net": {
         "params": {
-            "cellsVisualizationSpacingMultiplierX": 50, 
-            "cellsVisualizationSpacingMultiplierY": 1, 
-            "cellsVisualizationSpacingMultiplierZ": 50, 
+            "cellsVisualizationSpacingMultiplier": [50, 1, 50], 
             "cellParams": {
                 "L2Basket": {
                     "secs": {
