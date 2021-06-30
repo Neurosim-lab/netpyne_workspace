@@ -133,7 +133,7 @@ netParams.rxdParams['rates'] = {'ip3rg': {'species': h_gate, 'rate': '(1. / (1 +
 
 # Run parameters
 simConfig = specs.SimConfig()       # object of class simConfig to store simulation configuration
-simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
+simConfig.duration = 0.1*1e3        # Duration of the simulation, in ms
 simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
 simConfig.dt = 0.1                  # Internal integration timestep to use
 simConfig.verbose = False            # Show detailed messages 
@@ -160,8 +160,16 @@ simConfig.analysis['iplotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabe
 # Run sim
 # ------------------------------------------------------------
 if __name__ == '__main__':
-    netpyne_geppetto.netParams=netParams
-    netpyne_geppetto.simConfig=simConfig
+    try:
+        netpyne_geppetto.netParams=netParams
+        netpyne_geppetto.simConfig=simConfig
+    except:
+        from netpyne import sim
+        sim.createSimulateAnalyze(netParams, simConfig)
 
-#from netpyne import sim
-#sim.createSimulateAnalyze(netParams, simConfig)
+        # try loading gui_tut1
+        del netParams
+        del simConfig
+        sim.clearAll()
+        from gui_tut1 import netParams, simConfig
+        sim.createSimulateAnalyze(netParams, simConfig)
