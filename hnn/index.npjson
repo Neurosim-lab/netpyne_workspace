@@ -1,0 +1,8 @@
+{
+    "mod_folder": "../mod",
+    "simConfig_python": "src/cfg.py",
+    "netParams_python": "src/netParams.py",
+    "netParams_json": "params/hnn.json",
+    "simConfig_json": "params/hnn.json",
+    "simConfig_variable": "simConfig"
+}

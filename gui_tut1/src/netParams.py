@@ -37,26 +37,3 @@ netParams.connParams['E->E'] = {
     'delay': 5,     # delay min=0.2, mean=13.0, var = 1.4
     'synMech': 'exc',
     'sec': 'dend'}
-
-# Simulation options
-simConfig = specs.SimConfig()		# object of class SimConfig to store simulation configuration
-
-simConfig.duration = 0.2*1e3 			# Duration of the simulation, in ms
-simConfig.dt = 0.1 				# Internal integration timestep to use
-simConfig.verbose = False  			# Show detailed messages 
-simConfig.recordTraces = {'V_soma':{'sec':'soma','loc':0.5,'var':'v'},
-						 'V_dend': {'sec': 'dend', 'loc': 1.0, 'var':'v'}}  # Dict with traces to record
-simConfig.recordCells = [0]
-simConfig.recordStep = 0.1 			# Step size in ms to save data (eg. V traces, LFP, etc)
-simConfig.filename = 'gui_tut1'  # Set file output name
-simConfig.saveJson = False		# Save params, network and sim output to pickle file
-simConfig.analysis['iplotTraces'] = {'include': [0], 'overlay': True}
-simConfig.analysis['iplotRaster'] = {'markerSize': 5, 'showFig': True}
- 
-
-if __name__ == '__main__':
-    netpyne_geppetto.netParams=netParams
-    netpyne_geppetto.simConfig=simConfig
-
-#from netpyne import sim
-#sim.createSimulateAnalyze(netParams, simConfig)
