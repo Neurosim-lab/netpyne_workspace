@@ -56,46 +56,4 @@ netParams.connParams['I->E'] = {
   'weight': 0.01,                                      # synaptic weight 
   'delay': 'dist_3D/propVelocity',                      # transmission delay (ms) 
   'sec': ['soma','Bdend'], 
-  'synMech': 'inh'}                                     # synaptic mechanism 
-
-
-#------------------------------------------------------------------------------
-#
-# SIMULATION CONFIGURATION
-#
-#------------------------------------------------------------------------------
-
-# Run parameters
-simConfig = specs.SimConfig()       # object of class simConfig to store simulation configuration
-simConfig.duration = 1.0*1e3        # Duration of the simulation, in ms
-simConfig.hParams['v_init'] = -65   # set v_init to -65 mV
-simConfig.dt = 0.1                  # Internal integration timestep to use
-simConfig.verbose = False            # Show detailed messages 
-simConfig.recordStep = 1             # Step size in ms to save data (eg. V traces, LFP, etc)
-simConfig.filename = 'rxd_net'   # Set file output name
-
-
-# Recording/plotting parameters
-simConfig.recordTraces = {'V_soma':{'sec': 'soma','loc': 0.5,'var': 'v'},
-                          'ik_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'ik'},
-                          'cai_soma': {'sec': 'soma', 'loc':0.5, 'var': 'cai'},
-                          'cao_soma': {'sec': 'soma', 'loc': 0.5, 'var': 'cao'}}
-
-simConfig.recordLFP = [[-15, y, 1.0*netParams.sizeZ] for y in range(int(netParams.sizeY/3), int(netParams.sizeY), int(netParams.sizeY/3))]
-
-simConfig.analysis['iplotTraces'] ={'include': [0]}
-simConfig.analysis['iplotRaster'] = {'orderBy': 'y', 'orderInverse': True, 'saveFig': True, 'figSize': (9,3)}      # Plot a raster
-simConfig.analysis['iplotLFP'] = {'includeAxon': False, 'figSize': (6,10), 'saveFig': True} 
-simConfig.analysis['iplotRxDConcentration'] = {'speciesLabel': 'ca', 'regionLabel': 'ecs'}
-
-
-
-# ------------------------------------------------------------
-# Run sim
-# ------------------------------------------------------------
-if __name__ == '__main__':
-    netpyne_geppetto.netParams=netParams
-    netpyne_geppetto.simConfig=simConfig
-
-#from netpyne import sim
-#sim.createSimulateAnalyze(netParams, simConfig)
+  'synMech': 'inh'}                                     # synaptic mechanism

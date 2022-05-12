@@ -1,0 +1,4 @@
+{
+    "simConfig_python": "src/cfg.py",
+    "netParams_python": "src/netParams.py"
+}
